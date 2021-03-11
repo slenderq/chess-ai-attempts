@@ -1,18 +1,25 @@
 import chess
-#https://github.com/pychess/pychess 
+# https://github.com/niklasf/python-chess
+def print_board(board):
+    board_string = board.__str__()
 
-# import chess.svg
-# board = chess.Board("8/8/8/8/4N3/8/8/8 w - - 0 1")
-# squares = board.attacks(chess.E4)
-# image = chess.svg.board(board, squares=squares, size=350) 
-# print(image)
+    board_string = board_string.replace("r", "♜")
+    board_string = board_string.replace("n", "♞")
+    board_string = board_string.replace("b", "♝")
+    board_string = board_string.replace("q", "♛")
+    board_string = board_string.replace("k", "♚")
+    board_string = board_string.replace("p", "♟")
 
-import hichess
-from PySide2.QtWidgets import QApplication
-import sys
+    board_string = board_string.replace("R", "♖")
+    board_string = board_string.replace("N", "♘")
+    board_string = board_string.replace("B", "♗")
+    board_string = board_string.replace("Q", "♕")
+    board_string = board_string.replace("K", "♔")
+    board_string = board_string.replace("P", "♙")
+    print(board_string)
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    boardWidget = hichess.BoardWidget()
-    boardWidget.show()
-    sys.exit(app.exec_())
+
+
+board = chess.Board() 
+board.push_san("e4")
+print_board(board)
