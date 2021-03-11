@@ -1,4 +1,5 @@
 import chess
+import os
 # https://github.com/niklasf/python-chess
 def print_board(board):
     board_string = board.__str__()
@@ -18,8 +19,19 @@ def print_board(board):
     board_string = board_string.replace("P", "♙")
     print(board_string)
 
+def game_loop(board):
+    while True:
+        move = input("Please Enter a move \n")
+        try:
+            board.push_san(move)
+        except ValueError:
+            print("Please enter a valid move")
+            continue
 
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+        print_board(board)
 
 board = chess.Board() 
-board.push_san("e4")
-print_board(board)
+
+game_loop(board)
