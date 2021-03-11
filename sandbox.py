@@ -1,6 +1,8 @@
 import chess
 import os
 # https://github.com/niklasf/python-chess
+
+
 def print_board(board):
     board_string = board.__str__()
 
@@ -17,7 +19,26 @@ def print_board(board):
     board_string = board_string.replace("Q", "♕")
     board_string = board_string.replace("K", "♔")
     board_string = board_string.replace("P", "♙")
+
+    # Add coords for ease of use
+    board_list = board_string.split("\n")
+    i = 8
+    new_board_list = []
+
+    letter_row = "   a b c d e f g h"
+    new_board_list.append(letter_row)
+
+    for row in board_list:
+        new_row = f"{i}  {row}  {i}"
+        new_board_list.append(new_row)
+        i -= 1
+
+    new_board_list.append(letter_row)
+
+    board_string = "\n".join(new_board_list)
+
     print(board_string)
+
 
 def game_loop(board):
     while True:
@@ -32,6 +53,9 @@ def game_loop(board):
 
         print_board(board)
 
-board = chess.Board() 
 
+board = chess.Board()
+
+os.system('cls' if os.name == 'nt' else 'clear')
+print_board(board)
 game_loop(board)
