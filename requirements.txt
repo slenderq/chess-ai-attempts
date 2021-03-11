@@ -1,0 +1,5 @@
+chess==1.4.0
+hichesslib==1.2.10.3
+PySide2==5.15.2
+python-chess==1.999
+shiboken2==5.15.2
