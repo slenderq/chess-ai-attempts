@@ -1,5 +1,6 @@
 import chess
 import os
+import time
 # https://github.com/niklasf/python-chess
 
 
@@ -19,6 +20,9 @@ def print_board(board):
     board_string = board_string.replace("Q", "♕")
     board_string = board_string.replace("K", "♔")
     board_string = board_string.replace("P", "♙")
+
+    board_string = board_string.replace(".", "□")
+    # board_string = board_string.replace(".", "∷")
 
     # Add coords for ease of use
     board_list = board_string.split("\n")
@@ -40,22 +44,61 @@ def print_board(board):
     print(board_string)
 
 
-def game_loop(board):
-    while True:
-        move = input("Please Enter a move \n")
-        try:
-            board.push_san(move)
-        except ValueError:
-            print("Please enter a valid move")
-            continue
+def game_loop(white, black, wait=0):
+    """Main game loop for the game
 
+    Args:
+        white (Player): The white player
+        black (Player): The black player
+    """
+
+    board = chess.Board()
+
+    while not board.is_game_over():
         os.system('cls' if os.name == 'nt' else 'clear')
-
         print_board(board)
 
+        time.sleep(wait)
 
-board = chess.Board()
+        if board.turn == chess.WHITE:
+            move = white.get_move(board)
+        elif board.turn == chess.BLACK:
+            move = black.get_move(board)
+        else:
+            raise Exception
+        board.push(move)
 
-os.system('cls' if os.name == 'nt' else 'clear')
-print_board(board)
-game_loop(board)
+    print(board.result())
+
+
+class HumanPlayer:
+    def get_move(self, board):
+        """take input and get a move for the player"""
+        error = False
+        move = None
+
+        while move is None:
+
+            if error:
+                prefix = "❌"
+            elif board.turn == chess.WHITE:
+                prefix = "♙"
+            elif board.turn == chess.BLACK:
+                prefix = "♟"
+            input_string = f"{prefix} Please Enter a move \n"
+
+            move_san = input(input_string)
+            try:
+                move = board.parse_san(move_san)
+            except ValueError:
+                error = True
+
+        return move
+
+
+if __name__ == '__main__':
+
+    white = HumanPlayer()
+    black = HumanPlayer()
+
+    game_loop(white, black)
