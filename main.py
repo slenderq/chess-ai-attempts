@@ -2,6 +2,7 @@ import chess
 import os
 import time
 import random
+from itertools import combinations, permutations
 # https://github.com/niklasf/python-chess
 
 
@@ -51,7 +52,7 @@ def random_move(board):
     return random.choice(list(board.legal_moves))
 
 
-def game_loop(white, black, wait=0):
+def game_loop(white, black, wait=0, printing=True):
     """Main game loop for the game
 
     Args:
@@ -62,20 +63,21 @@ def game_loop(white, black, wait=0):
     board = chess.Board()
 
     while not board.is_game_over():
-        os.system('cls' if os.name == 'nt' else 'clear')
-        print_board(board)
+        if printing:
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print_board(board)
 
         time.sleep(wait)
 
         if board.turn == chess.WHITE:
-            move = white.get_move(board)
+            move = white.get_move(board.copy())
         elif board.turn == chess.BLACK:
-            move = black.get_move(board)
+            move = black.get_move(board.copy())
         else:
             raise Exception
         board.push(move)
 
-    print(board.result())
+    return board.result()
 
 
 class HumanPlayer:
@@ -104,13 +106,16 @@ class HumanPlayer:
 
 
 class RandomPlayer:
+    elo = 400
+
     def get_move(self, board):
         """take input and get a move for the player"""
 
         return random_move(board)
 
 
-class GreedyPlayer:
+class CapturePlayer:
+    elo = 400
     """This player will make random moves but will always capture"""
 
     def get_move(self, board):
@@ -124,12 +129,47 @@ class GreedyPlayer:
         return random_move(board)
 
 
-if __name__ == '__main__':
+def basic_game():
 
     black = RandomPlayer()
-    white = GreedyPlayer()
+    white = CapturePlayer()
 
     # white = HumanPlayer()
     # black = HumanPlayer()
 
-    game_loop(white, black, wait=0.1)
+    result = game_loop(white, black, wait=0.01)
+
+    if result == "1-0":
+        print("White wins")
+    if result == "0-1":
+        print("Black wins")
+    if result == "1/2-1/2":
+        print("Draw")
+
+
+def tournament(games_in_match=4):
+    all_players = [RandomPlayer(),
+                   CapturePlayer()]
+
+    bracket = list(combinations(all_players, r=2),)
+
+    for match in bracket:
+        score = []
+        # Game
+        for i in range(0, games_in_match):
+            if random.choice([True, False]):
+                white = match[0]
+                black = match[1]
+            else:
+                white = match[1]
+                black = match[0]
+
+            print(i)
+
+    print(bracket)
+
+
+if __name__ == '__main__':
+
+    tournament()
+    # basic_game()
