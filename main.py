@@ -81,10 +81,15 @@ def game_loop(white, black, wait=0, printing=True):
     return board.result()
 
 
-# class Player:
+class Player:
+    def __init__(self):
+        self.elo = 400
+
+    def __str__(self):
+        return str(type(self).__name__)
 
 
-class HumanPlayer:
+class HumanPlayer(Player):
     def get_move(self, board):
         """take input and get a move for the player"""
         error = False
@@ -109,17 +114,14 @@ class HumanPlayer:
         return move
 
 
-class RandomPlayer:
-    elo = 400
-
+class RandomPlayer(Player):
     def get_move(self, board):
         """take input and get a move for the player"""
 
         return random_move(board)
 
 
-class CapturePlayer:
-    elo = 400
+class CapturePlayer(Player):
     """This player will make random moves but will always capture"""
 
     def get_move(self, board):
@@ -173,7 +175,7 @@ def tournament(games_in_match=3, wait=0):
                 black = match[0]
 
             # TODO: It would be nice to expose the actual games for later analysis
-            result = game_loop(white, black, wait=0.001)
+            result = game_loop(white, black, wait=0)
 
             if result == "1-0":
                 score[0] += 1
@@ -188,8 +190,9 @@ def tournament(games_in_match=3, wait=0):
 
             time.sleep(wait)
 
+        os.system("cls" if os.name == "nt" else "clear")
         if score[0] == score[1]:
-            print("draw match!")
+            print(f"draw match! {score}")
         else:
             best_score = max(score)
             best_index = score.index(best_score)
@@ -198,6 +201,15 @@ def tournament(games_in_match=3, wait=0):
 
             print(f"{winner} won the match! {score}")
             print(f"{loser} lost the match!")
+
+        temp_elo = match[0].elo
+        match[0].elo += (match[1].elo + (400 * (score[0] - score[1]))) / games_in_match
+        match[1].elo += (temp_elo + (400 * (score[1] - score[0]))) / games_in_match
+
+    sorted_list = sorted(all_players, key=lambda x: x.elo, reverse=True)
+
+    for player in sorted_list:
+        print(f"{player} ELO: {player.elo}")
 
 
 if __name__ == "__main__":
