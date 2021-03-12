@@ -1,6 +1,7 @@
 import chess
 import os
 import time
+import random
 # https://github.com/niklasf/python-chess
 
 
@@ -42,6 +43,12 @@ def print_board(board):
     board_string = "\n".join(new_board_list)
 
     print(board_string)
+
+
+def random_move(board):
+    """Return a random move from the board"""
+
+    return random.choice(list(board.legal_moves))
 
 
 def game_loop(white, black, wait=0):
@@ -96,9 +103,19 @@ class HumanPlayer:
         return move
 
 
+class RandomPlayer:
+    def get_move(self, board):
+        """take input and get a move for the player"""
+
+        return random_move(board)
+
+
 if __name__ == '__main__':
 
-    white = HumanPlayer()
-    black = HumanPlayer()
+    black = RandomPlayer()
+    white = RandomPlayer()
 
-    game_loop(white, black)
+    # white = HumanPlayer()
+    # black = HumanPlayer()
+
+    game_loop(white, black, wait=1)
