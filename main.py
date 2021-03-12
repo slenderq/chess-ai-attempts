@@ -126,6 +126,13 @@ class CapturePlayer(Player):
 
     def get_move(self, board):
         """take input and get a move for the player"""
+        checking_move = [
+            move for move in list(board.legal_moves) if board.gives_check(move)
+        ]
+
+        if len(checking_move) > 0:
+            return random.choice(checking_move)
+
         capture_moves = [
             move for move in list(board.legal_moves) if board.is_capture(move)
         ]
@@ -138,11 +145,11 @@ class CapturePlayer(Player):
 
 def basic_game():
 
-    black = RandomPlayer()
-    white = CapturePlayer()
+    # black = RandomPlayer()
+    # white = CapturePlayer()
 
-    # white = HumanPlayer()
-    # black = HumanPlayer()
+    white = HumanPlayer()
+    black = HumanPlayer()
 
     result = game_loop(white, black, wait=0.01)
 
@@ -154,7 +161,7 @@ def basic_game():
         print("Draw")
 
 
-def tournament(games_in_match=3, wait=0):
+def tournament(games_in_match=11, wait=0):
     all_players = [RandomPlayer(), CapturePlayer()]
 
     bracket = list(
@@ -178,10 +185,12 @@ def tournament(games_in_match=3, wait=0):
             result = game_loop(white, black, wait=0)
 
             if result == "1-0":
-                score[0] += 1
+                i = match.index(white)
+                score[i] += 1
                 print(f"{white} wins")
             if result == "0-1":
-                score[1] += 1
+                i = match.index(black)
+                score[i] += 1
                 print(f"{black} wins")
             if result == "1/2-1/2":
                 score[0] += 0.5
