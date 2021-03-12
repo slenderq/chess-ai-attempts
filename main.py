@@ -3,6 +3,7 @@ import os
 import time
 import random
 from itertools import combinations, permutations
+
 # https://github.com/niklasf/python-chess
 
 
@@ -64,7 +65,7 @@ def game_loop(white, black, wait=0, printing=True):
 
     while not board.is_game_over():
         if printing:
-            os.system('cls' if os.name == 'nt' else 'clear')
+            os.system("cls" if os.name == "nt" else "clear")
             print_board(board)
 
         time.sleep(wait)
@@ -78,6 +79,9 @@ def game_loop(white, black, wait=0, printing=True):
         board.push(move)
 
     return board.result()
+
+
+# class Player:
 
 
 class HumanPlayer:
@@ -120,8 +124,9 @@ class CapturePlayer:
 
     def get_move(self, board):
         """take input and get a move for the player"""
-        capture_moves = [move for move in list(
-            board.legal_moves) if board.is_capture(move)]
+        capture_moves = [
+            move for move in list(board.legal_moves) if board.is_capture(move)
+        ]
 
         if len(capture_moves) > 0:
             return random.choice(capture_moves)
@@ -147,16 +152,19 @@ def basic_game():
         print("Draw")
 
 
-def tournament(games_in_match=4):
-    all_players = [RandomPlayer(),
-                   CapturePlayer()]
+def tournament(games_in_match=3, wait=0):
+    all_players = [RandomPlayer(), CapturePlayer()]
 
-    bracket = list(combinations(all_players, r=2),)
+    bracket = list(
+        combinations(all_players, r=2),
+    )
 
     for match in bracket:
-        score = []
+        score = [0, 0]
         # Game
         for i in range(0, games_in_match):
+            print(f"Match {i}")
+
             if random.choice([True, False]):
                 white = match[0]
                 black = match[1]
@@ -164,12 +172,35 @@ def tournament(games_in_match=4):
                 white = match[1]
                 black = match[0]
 
-            print(i)
+            # TODO: It would be nice to expose the actual games for later analysis
+            result = game_loop(white, black, wait=0.001)
 
-    print(bracket)
+            if result == "1-0":
+                score[0] += 1
+                print(f"{white} wins")
+            if result == "0-1":
+                score[1] += 1
+                print(f"{black} wins")
+            if result == "1/2-1/2":
+                score[0] += 0.5
+                score[1] += 0.5
+                print("Draw")
+
+            time.sleep(wait)
+
+        if score[0] == score[1]:
+            print("draw match!")
+        else:
+            best_score = max(score)
+            best_index = score.index(best_score)
+            winner = match[best_index]
+            loser = match[abs(best_index - 1)]
+
+            print(f"{winner} won the match! {score}")
+            print(f"{loser} lost the match!")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     tournament()
     # basic_game()
