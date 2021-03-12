@@ -110,12 +110,26 @@ class RandomPlayer:
         return random_move(board)
 
 
+class GreedyPlayer:
+    """This player will make random moves but will always capture"""
+
+    def get_move(self, board):
+        """take input and get a move for the player"""
+        capture_moves = [move for move in list(
+            board.legal_moves) if board.is_capture(move)]
+
+        if len(capture_moves) > 0:
+            return random.choice(capture_moves)
+
+        return random_move(board)
+
+
 if __name__ == '__main__':
 
     black = RandomPlayer()
-    white = RandomPlayer()
+    white = GreedyPlayer()
 
     # white = HumanPlayer()
     # black = HumanPlayer()
 
-    game_loop(white, black, wait=1)
+    game_loop(white, black, wait=0.1)
