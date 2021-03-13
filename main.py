@@ -3,6 +3,7 @@ import os
 import time
 import random
 from itertools import combinations, permutations
+import math
 
 # https://github.com/niklasf/python-chess
 
@@ -170,47 +171,42 @@ class BasicMinMaxPlayer(Player):
 
     def get_move(self, board):
         """take input and get a move for the player"""
-        checking_move = [
-            move for move in list(board.legal_moves) if board.gives_check(move)
-        ]
-
-        if len(checking_move) > 0:
-            return random.choice(checking_move)
-
-        capture_moves = [
-            move for move in list(board.legal_moves) if board.is_capture(move)
-        ]
-
-        if len(capture_moves) > 0:
-            return random.choice(capture_moves)
 
         move, level_eval = self.min_max(board)
         return move
 
-    def min_max(self, board, search_depth=2, max=True):
-
-        eval_dict = {key: 0 for key in board.legal_moves}
+    def min_max(self, board, search_depth=2, max=True, alpha=-math.inf, beta=math.inf):
 
         best_move = None
-        best_eval = None
+        best_eval = math.inf
+        if max:
+            best_eval *= -1
 
-        for move in eval_dict.keys():
+        for move in board.legal_moves:
 
             new_board = board.copy()
             level_eval = 0
+
             if search_depth != 0:
                 new_board.push(move)
-                prev_move, level_eval = self.min_max(
+                _, level_eval = self.min_max(
                     new_board, search_depth=search_depth - 1, max=not max
                 )
-            eval_dict[move] = self.eval_move(move, board) + level_eval
 
-        if max:
-            best_move = key_max_val(eval_dict)
-            best_eval = eval_dict[best_move]
-        else:
-            best_move = key_min_val(eval_dict)
-            best_eval = eval_dict[best_move]
+            try:
+                eval_value = self.eval_move(move, board) + level_eval
+            except TypeError:
+                print(self.eval_move(move, board))
+                print(level_eval)
+
+            if max:
+                if best_eval < eval_value:
+                    best_eval = eval_value
+                    best_move = move
+            else:
+                if best_eval > eval_value:
+                    best_eval = eval_value
+                    best_move = move
 
         return best_move, best_eval
 
@@ -226,6 +222,9 @@ class BasicMinMaxPlayer(Player):
         eval_number += constraint_value(current_board.gives_check(move), 1000)
 
         eval_number += constraint_value(current_board.is_capture(move), 1000)
+
+        # Add some randomness
+        eval_number += random.randint(-1, 1)
 
         return eval_number
         # white = constraint_value(current_board.is_checkmate(), -1e9)
@@ -258,8 +257,12 @@ def basic_game():
         print("Draw")
 
 
-def tournament(games_in_match=11, wait=0):
-    all_players = [RandomPlayer(), CapturePlayer(), BasicMinMaxPlayer()]
+def tournament(games_in_match=3, wait=0):
+    all_players = [
+        # RandomPlayer(),
+        CapturePlayer(),
+        BasicMinMaxPlayer(),
+    ]
 
     bracket = list(
         combinations(all_players, r=2),
@@ -269,7 +272,7 @@ def tournament(games_in_match=11, wait=0):
         score = [0, 0]
         # Game
         for i in range(0, games_in_match):
-            print(f"Match {i}")
+            print(f"Match {i + 1}")
 
             if random.choice([True, False]):
                 white = match[0]
