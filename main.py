@@ -7,6 +7,28 @@ from itertools import combinations, permutations
 # https://github.com/niklasf/python-chess
 
 
+def constraint_value(bool_chk, value):
+    if bool_chk:
+        return value
+    return 0
+
+
+def key_max_val(d):
+    """a) create a list of the dict's keys and values;
+    b) return the key with the max value"""
+    v = list(d.values())
+    k = list(d.keys())
+    return k[v.index(max(v))]
+
+
+def key_min_val(d):
+    """a) create a list of the dict's keys and values;
+    b) return the key with the max value"""
+    v = list(d.values())
+    k = list(d.keys())
+    return k[v.index(min(v))]
+
+
 def print_board(board):
     board_string = board.__str__()
 
@@ -143,6 +165,81 @@ class CapturePlayer(Player):
         return random_move(board)
 
 
+class BasicMinMaxPlayer(Player):
+    """This player will make random moves but will always capture"""
+
+    def get_move(self, board):
+        """take input and get a move for the player"""
+        checking_move = [
+            move for move in list(board.legal_moves) if board.gives_check(move)
+        ]
+
+        if len(checking_move) > 0:
+            return random.choice(checking_move)
+
+        capture_moves = [
+            move for move in list(board.legal_moves) if board.is_capture(move)
+        ]
+
+        if len(capture_moves) > 0:
+            return random.choice(capture_moves)
+
+        move, level_eval = self.min_max(board)
+        return move
+
+    def min_max(self, board, search_depth=2, max=True):
+
+        eval_dict = {key: 0 for key in board.legal_moves}
+
+        best_move = None
+        best_eval = None
+
+        for move in eval_dict.keys():
+
+            new_board = board.copy()
+            level_eval = 0
+            if search_depth != 0:
+                new_board.push(move)
+                prev_move, level_eval = self.min_max(
+                    new_board, search_depth=search_depth - 1, max=not max
+                )
+            eval_dict[move] = self.eval_move(move, board) + level_eval
+
+        if max:
+            best_move = key_max_val(eval_dict)
+            best_eval = eval_dict[best_move]
+        else:
+            best_move = key_min_val(eval_dict)
+            best_eval = eval_dict[best_move]
+
+        return best_move, best_eval
+
+    def eval_move(self, move, current_board):
+        """Get a value for the goodness of a board
+
+        Return:
+            int
+        """
+
+        eval_number = 0
+
+        eval_number += constraint_value(current_board.gives_check(move), 1000)
+
+        eval_number += constraint_value(current_board.is_capture(move), 1000)
+
+        return eval_number
+        # white = constraint_value(current_board.is_checkmate(), -1e9)
+
+        # If the board is checkmate then we should
+        # if current_board.turn == chess.WHITE:
+        # black = constraint_value(current_board.is_checkmate(), 1e9)
+        # white = constraint_value(current_board.is_checkmate(), -1e9)
+
+        # if current_board.turn == chess.BLACK:
+        # white = constraint_value(current_board.is_checkmate(), 1e9)
+        # black = constraint_value(current_board.is_checkmate(), -1e9)
+
+
 def basic_game():
 
     # black = RandomPlayer()
@@ -162,7 +259,7 @@ def basic_game():
 
 
 def tournament(games_in_match=11, wait=0):
-    all_players = [RandomPlayer(), CapturePlayer()]
+    all_players = [RandomPlayer(), CapturePlayer(), BasicMinMaxPlayer()]
 
     bracket = list(
         combinations(all_players, r=2),
@@ -182,7 +279,7 @@ def tournament(games_in_match=11, wait=0):
                 black = match[0]
 
             # TODO: It would be nice to expose the actual games for later analysis
-            result = game_loop(white, black, wait=0)
+            result = game_loop(white, black, wait=0, printing=False)
 
             if result == "1-0":
                 i = match.index(white)
