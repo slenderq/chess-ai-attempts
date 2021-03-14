@@ -48,6 +48,29 @@ def count_pieces(current_board, turn):
     return eval_number
 
 
+def all_pieces(current_board, color):
+    """Get all the pieces regareless of type
+
+    Args:
+        current_board (board): current_board
+        color ([type]): [description]
+    """
+
+    all_types = [
+        chess.PAWN,
+        chess.KNIGHT,
+        chess.BISHOP,
+        chess.ROOK,
+        chess.QUEEN,
+        chess.KING,
+    ]
+    full_list = []
+    for p_type in all_types:
+        full_list += current_board.pieces(p_type, color)
+
+    return full_list
+
+
 def min_max(
     context,
     board,
@@ -217,10 +240,72 @@ class BasicMinMaxPlayer(Player):
         return eval_number
 
 
-# class BetterMinMaxPlayer(Player):
-# """This player will make random moves but will always capture"""
+class BetterMinMaxPlayer(Player):
+    """This player will make random moves but will always capture"""
 
-# def __init__(self, search_depth=7):
-# super().__init__()
+    def __init__(self, search_depth=7):
+        super().__init__()
 
-# self.search_depth = search_depth
+        self.search_depth = search_depth
+
+    def __str__(self):
+        previous = super().__str__()
+        return previous + " " + str(self.search_depth)
+
+    def eval_move(self, move, current_board):
+        """Get a value for the goodness of a board
+
+        Return:
+            int
+        """
+        current_board = current_board.copy(stack=10)
+
+        turn = current_board.turn
+        eval_number = 0
+
+        eval_number += constraint_value(current_board.gives_check(move), 1000)
+        eval_number += constraint_value(current_board.is_capture(move), 1000)
+
+        eval_number += constraint_value(current_board.is_castling(move), 50)
+        # eval_number += constraint_value(current_board.gives_check(move), 1000)
+
+        # Add some randomness
+        eval_number += random.randint(-1, 1)
+
+        current_board.push(move)
+
+        eval_number += constraint_value(current_board.is_checkmate(), 100)
+
+        eval_number += constraint_value(current_board.is_stalemate(), -100)
+
+        eval_number += count_pieces(current_board, turn)
+
+        # attacker detection
+        for our_piece_square in all_pieces(current_board, turn):
+
+            # Check that we are not getting attacked!
+            eval_number += constraint_value(
+                current_board.is_attacked_by(not turn, our_piece_square), -100
+            )
+
+            # Check that we are not getting pinned!
+            eval_number += constraint_value(
+                current_board.is_pinned(turn, our_piece_square), -100
+            )
+
+        for their_piece_square in all_pieces(current_board, not turn):
+
+            # Try to attack when you can
+            eval_number += constraint_value(
+                current_board.is_attacked_by(turn, their_piece_square), 100
+            )
+
+            # Check that we are not getting pinned!
+            eval_number += constraint_value(
+                current_board.is_pinned(turn, their_piece_square), 100
+            )
+
+        current_board.pop()
+        return eval_number
+
+        pass

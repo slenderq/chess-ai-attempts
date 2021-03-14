@@ -111,6 +111,9 @@ def tournament(games_in_match=3, wait=0):
         # players.BasicMinMaxPlayer(search_depth=11),
         # players.BasicMinMaxPlayer(search_depth=7),
         players.BasicMinMaxPlayer(search_depth=5),
+        players.BetterMinMaxPlayer(search_depth=5),
+        players.BetterMinMaxPlayer(search_depth=8),
+        players.BetterMinMaxPlayer(search_depth=3),
         players.BasicMinMaxPlayer(search_depth=3),
         players.BasicMinMaxPlayer(search_depth=1),
     ]
