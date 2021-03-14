@@ -107,7 +107,12 @@ def tournament(games_in_match=3, wait=0):
     all_players = [
         players.RandomPlayer(),
         players.CapturePlayer(),
-        players.BasicMinMaxPlayer(),
+        players.BasicMinMaxPlayer(search_depth=14),
+        players.BasicMinMaxPlayer(search_depth=11),
+        players.BasicMinMaxPlayer(search_depth=7),
+        players.BasicMinMaxPlayer(search_depth=5),
+        players.BasicMinMaxPlayer(search_depth=3),
+        players.BasicMinMaxPlayer(search_depth=1),
     ]
 
     bracket = list(

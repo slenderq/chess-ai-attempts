@@ -17,9 +17,43 @@ def random_move(board):
     return random.choice(list(board.legal_moves))
 
 
+def count_pieces(current_board, turn):
+
+    # https://en.wikipedia.org/wiki/Chess_piece_relative_value
+    # TODO: This could actually be more complex
+    white = 0
+    black = 0
+
+    color = chess.WHITE
+    white += sum(current_board.pieces(chess.PAWN, color)) * 1
+    white += sum(current_board.pieces(chess.KNIGHT, color)) * 3
+    white += sum(current_board.pieces(chess.BISHOP, color)) * 3
+    white += sum(current_board.pieces(chess.ROOK, color)) * 5
+    white += sum(current_board.pieces(chess.QUEEN, color)) * 9
+
+    color = chess.BLACK
+    black += sum(current_board.pieces(chess.PAWN, color)) * 1
+    black += sum(current_board.pieces(chess.KNIGHT, color)) * 3
+    black += sum(current_board.pieces(chess.BISHOP, color)) * 3
+    black += sum(current_board.pieces(chess.ROOK, color)) * 5
+    black += sum(current_board.pieces(chess.QUEEN, color)) * 9
+
+    if turn == chess.BLACK:
+        differential = black - white
+    else:  # chess.WHITE
+        differential = white - black
+
+    eval_number = differential * 10
+
+    return eval_number
+
+
 def min_max(
-    context, board, search_depth=11, max_player=True, alpha=-math.inf, beta=math.inf
+    context, board, search_depth=None, max_player=True, alpha=-math.inf, beta=math.inf
 ):
+    if search_depth is None:
+        search_depth = context.search_depth
+
     # TODO: Actually add ab pruning here
     processes = []
     best_move = None
@@ -136,6 +170,15 @@ class CapturePlayer(Player):
 class BasicMinMaxPlayer(Player):
     """This player will make random moves but will always capture"""
 
+    def __init__(self, search_depth=7):
+        super().__init__()
+
+        self.search_depth = search_depth
+
+    def __str__(self):
+        previous = super().__str__()
+        return previous + " " + str(self.search_depth)
+
     def eval_move(self, move, current_board):
         """Get a value for the goodness of a board
 
@@ -158,40 +201,9 @@ class BasicMinMaxPlayer(Player):
 
         eval_number += constraint_value(current_board.is_checkmate(), 1000)
 
-        # https://en.wikipedia.org/wiki/Chess_piece_relative_value
-        # TODO: This could actually be more complex
         white = 0
-        black = 0
 
-        color = chess.WHITE
-        white += sum(current_board.pieces(chess.PAWN, color)) * 1
-        white += sum(current_board.pieces(chess.KNIGHT, color)) * 3
-        white += sum(current_board.pieces(chess.BISHOP, color)) * 3
-        white += sum(current_board.pieces(chess.ROOK, color)) * 5
-        white += sum(current_board.pieces(chess.QUEEN, color)) * 9
+        eval_number += count_pieces(current_board, turn)
 
-        color = chess.BLACK
-        black += sum(current_board.pieces(chess.PAWN, color)) * 1
-        black += sum(current_board.pieces(chess.KNIGHT, color)) * 3
-        black += sum(current_board.pieces(chess.BISHOP, color)) * 3
-        black += sum(current_board.pieces(chess.ROOK, color)) * 5
-        black += sum(current_board.pieces(chess.QUEEN, color)) * 9
-
-        if turn == chess.BLACK:
-            differential = black - white
-        else:  # chess.WHITE
-            differential = white - black
-
-        eval_number += differential * 10
-        # white = constraint_value(current_board.is_checkmate(), -1e9)
-
-        # If the board is checkmate then we should
-        # if current_board.turn == chess.WHITE:
-        # black = constraint_value(current_board.is_checkmate(), 1e9)
-        # white = constraint_value(current_board.is_checkmate(), -1e9)
-
-        # if current_board.turn == chess.BLACK:
-        # white = constraint_value(current_board.is_checkmate(), 1e9)
-        # black = constraint_value(current_board.is_checkmate(), -1e9)
         current_board.pop()
         return eval_number
