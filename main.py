@@ -107,9 +107,9 @@ def tournament(games_in_match=3, wait=0):
     all_players = [
         players.RandomPlayer(),
         players.CapturePlayer(),
-        players.BasicMinMaxPlayer(search_depth=14),
-        players.BasicMinMaxPlayer(search_depth=11),
-        players.BasicMinMaxPlayer(search_depth=7),
+        # players.BasicMinMaxPlayer(search_depth=14),
+        # players.BasicMinMaxPlayer(search_depth=11),
+        # players.BasicMinMaxPlayer(search_depth=7),
         players.BasicMinMaxPlayer(search_depth=5),
         players.BasicMinMaxPlayer(search_depth=3),
         players.BasicMinMaxPlayer(search_depth=1),
@@ -121,9 +121,11 @@ def tournament(games_in_match=3, wait=0):
 
     for match in bracket:
         score = [0, 0]
+
+        print(f"Match {match[0]}, {match[1]}")
         # Game
         for i in range(0, games_in_match):
-            print(f"Match {i + 1}")
+            print(f"Game {i + 1}")
 
             if random.choice([True, False]):
                 white = match[0]

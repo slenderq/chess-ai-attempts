@@ -49,7 +49,14 @@ def count_pieces(current_board, turn):
 
 
 def min_max(
-    context, board, search_depth=None, max_player=True, alpha=-math.inf, beta=math.inf
+    context,
+    board,
+    search_depth=None,
+    max_player=True,
+    alpha=-math.inf,
+    beta=math.inf,
+    save_tree=False,
+    sum_children=False,
 ):
     if search_depth is None:
         search_depth = context.search_depth
@@ -75,7 +82,10 @@ def min_max(
             # _ = board.pop()
 
         try:
-            eval_value = context.eval_move(move, board) + level_eval
+            if sum_children:
+                eval_value = context.eval_move(move, board) + level_eval
+            else:
+                eval_value = context.eval_move(move, board)
         except TypeError:
             print(context.eval_move(move, board))
             print(level_eval)
@@ -201,9 +211,16 @@ class BasicMinMaxPlayer(Player):
 
         eval_number += constraint_value(current_board.is_checkmate(), 1000)
 
-        white = 0
-
         eval_number += count_pieces(current_board, turn)
 
         current_board.pop()
         return eval_number
+
+
+# class BetterMinMaxPlayer(Player):
+# """This player will make random moves but will always capture"""
+
+# def __init__(self, search_depth=7):
+# super().__init__()
+
+# self.search_depth = search_depth
