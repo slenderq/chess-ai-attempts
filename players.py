@@ -74,6 +74,10 @@ class Player:
         move, _ = min_max(self, board)
         return move
 
+    @property
+    def str_elo(self):
+        return f"{round(self.elo, 1)}"
+
 
 class HumanPlayer(Player):
     def get_move(self, board):

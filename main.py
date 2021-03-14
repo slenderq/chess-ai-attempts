@@ -105,7 +105,7 @@ def basic_game():
 
 def tournament(games_in_match=3, wait=0):
     all_players = [
-        # RandomPlayer(),
+        players.RandomPlayer(),
         players.CapturePlayer(),
         players.BasicMinMaxPlayer(),
     ]
@@ -164,7 +164,7 @@ def tournament(games_in_match=3, wait=0):
     sorted_list = sorted(all_players, key=lambda x: x.elo, reverse=True)
 
     for player in sorted_list:
-        print(f"{player} ELO: {player.elo}")
+        print(f"{player} ELO: {player.str_elo}")
 
 
 if __name__ == "__main__":
