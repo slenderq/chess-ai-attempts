@@ -18,7 +18,7 @@ def random_move(board):
 
 
 def min_max(
-    context, board, search_depth=7, max_player=True, alpha=-math.inf, beta=math.inf
+    context, board, search_depth=11, max_player=True, alpha=-math.inf, beta=math.inf
 ):
     # TODO: Actually add ab pruning here
     processes = []
@@ -41,7 +41,6 @@ def min_max(
             # _ = board.pop()
 
         try:
-            eval_value = context.eval_move(move, board)
             eval_value = context.eval_move(move, board) + level_eval
         except TypeError:
             print(context.eval_move(move, board))
@@ -143,7 +142,9 @@ class BasicMinMaxPlayer(Player):
         Return:
             int
         """
+        current_board = current_board.copy()
 
+        turn = current_board.turn
         eval_number = 0
 
         eval_number += constraint_value(current_board.gives_check(move), 1000)
@@ -156,6 +157,32 @@ class BasicMinMaxPlayer(Player):
         current_board.push(move)
 
         eval_number += constraint_value(current_board.is_checkmate(), 1000)
+
+        # https://en.wikipedia.org/wiki/Chess_piece_relative_value
+        # TODO: This could actually be more complex
+        white = 0
+        black = 0
+
+        color = chess.WHITE
+        white += sum(current_board.pieces(chess.PAWN, color)) * 1
+        white += sum(current_board.pieces(chess.KNIGHT, color)) * 3
+        white += sum(current_board.pieces(chess.BISHOP, color)) * 3
+        white += sum(current_board.pieces(chess.ROOK, color)) * 5
+        white += sum(current_board.pieces(chess.QUEEN, color)) * 9
+
+        color = chess.BLACK
+        black += sum(current_board.pieces(chess.PAWN, color)) * 1
+        black += sum(current_board.pieces(chess.KNIGHT, color)) * 3
+        black += sum(current_board.pieces(chess.BISHOP, color)) * 3
+        black += sum(current_board.pieces(chess.ROOK, color)) * 5
+        black += sum(current_board.pieces(chess.QUEEN, color)) * 9
+
+        if turn == chess.BLACK:
+            differential = black - white
+        else:  # chess.WHITE
+            differential = white - black
+
+        eval_number += differential * 10
         # white = constraint_value(current_board.is_checkmate(), -1e9)
 
         # If the board is checkmate then we should
