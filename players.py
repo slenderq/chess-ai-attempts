@@ -2,6 +2,7 @@ import chess
 
 import math
 import random
+import multiprocessing
 
 
 def constraint_value(bool_chk, value):
@@ -16,6 +17,50 @@ def random_move(board):
     return random.choice(list(board.legal_moves))
 
 
+def min_max(
+    context, board, search_depth=7, max_player=True, alpha=-math.inf, beta=math.inf
+):
+    # TODO: Actually add ab pruning here
+    processes = []
+    best_move = None
+    best_eval = math.inf
+    if max_player:
+        best_eval = best_eval * -1
+
+    for move in board.legal_moves:
+
+        level_eval = 0
+
+        if search_depth != 0:
+            # board.push(move)
+
+            # spawn a new thread
+            args = (context, board.copy(), search_depth - 1, not max_player)
+            multiprocessing.Process(target=min_max, args=args)
+
+            # _ = board.pop()
+
+        try:
+            eval_value = context.eval_move(move, board) + level_eval
+        except TypeError:
+            print(context.eval_move(move, board))
+            print(level_eval)
+
+        if max_player:
+            if best_eval < eval_value:
+                best_eval = eval_value
+                best_move = move
+        else:
+            if best_eval > eval_value:
+                best_eval = eval_value
+                best_move = move
+
+    for process in processes:
+        process.join()
+
+    return best_move, best_eval
+
+
 class Player:
     def __init__(self):
         self.elo = 400
@@ -26,47 +71,8 @@ class Player:
     def get_move(self, board):
         """take input and get a move for the player"""
 
-        move, level_eval = self.min_max(board)
+        move, _ = min_max(self, board)
         return move
-
-    def min_max(
-        self, board, search_depth=2, max_player=True, alpha=-math.inf, beta=math.inf
-    ):
-        # TODO: Actually add ab pruning here
-
-        best_move = None
-        best_eval = math.inf
-        if max_player:
-            best_eval = best_eval * -1
-
-        for move in board.legal_moves:
-
-            level_eval = 0
-
-            if search_depth != 0:
-                board.push(move)
-                _, level_eval = self.min_max(
-                    board, search_depth=search_depth - 1, max_player=not max_player
-                )
-
-                _ = board.pop()
-
-            try:
-                eval_value = self.eval_move(move, board) + level_eval
-            except TypeError:
-                print(self.eval_move(move, board))
-                print(level_eval)
-
-            if max_player:
-                if best_eval < eval_value:
-                    best_eval = eval_value
-                    best_move = move
-            else:
-                if best_eval > eval_value:
-                    best_eval = eval_value
-                    best_move = move
-
-        return best_move, best_eval
 
 
 class HumanPlayer(Player):
