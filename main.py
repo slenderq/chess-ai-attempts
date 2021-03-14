@@ -118,6 +118,50 @@ class Player:
     def __str__(self):
         return str(type(self).__name__)
 
+    def get_move(self, board):
+        """take input and get a move for the player"""
+
+        move, level_eval = self.min_max(board)
+        return move
+
+    def min_max(
+        self, board, search_depth=4, max_player=True, alpha=-math.inf, beta=math.inf
+    ):
+
+        best_move = None
+        best_eval = math.inf
+        if max_player:
+            best_eval = best_eval * -1
+
+        for move in board.legal_moves:
+
+            level_eval = 0
+
+            if search_depth != 0:
+                board.push(move)
+                _, level_eval = self.min_max(
+                    board, search_depth=search_depth - 1, max_player=not max_player
+                )
+
+                _ = board.pop()
+
+            try:
+                eval_value = self.eval_move(move, board) + level_eval
+            except TypeError:
+                print(self.eval_move(move, board))
+                print(level_eval)
+
+            if max_player:
+                if best_eval < eval_value:
+                    best_eval = eval_value
+                    best_move = move
+            else:
+                if best_eval > eval_value:
+                    best_eval = eval_value
+                    best_move = move
+
+        return best_move, best_eval
+
 
 class HumanPlayer(Player):
     def get_move(self, board):
@@ -176,50 +220,6 @@ class CapturePlayer(Player):
 class BasicMinMaxPlayer(Player):
     """This player will make random moves but will always capture"""
 
-    def get_move(self, board):
-        """take input and get a move for the player"""
-
-        move, level_eval = self.min_max(board)
-        return move
-
-    def min_max(
-        self, board, search_depth=2, max_player=True, alpha=-math.inf, beta=math.inf
-    ):
-
-        best_move = None
-        best_eval = math.inf
-        if max_player:
-            best_eval = best_eval * -1
-
-        for move in board.legal_moves:
-
-            level_eval = 0
-
-            if search_depth != 0:
-                board.push(move)
-                _, level_eval = self.min_max(
-                    board, search_depth=search_depth - 1, max_player=not max_player
-                )
-
-                _ = board.pop()
-
-            try:
-                eval_value = self.eval_move(move, board) + level_eval
-            except TypeError:
-                print(self.eval_move(move, board))
-                print(level_eval)
-
-            if max_player:
-                if best_eval < eval_value:
-                    best_eval = eval_value
-                    best_move = move
-            else:
-                if best_eval > eval_value:
-                    best_eval = eval_value
-                    best_move = move
-
-        return best_move, best_eval
-
     def eval_move(self, move, current_board):
         """Get a value for the goodness of a board
 
@@ -236,7 +236,9 @@ class BasicMinMaxPlayer(Player):
         # Add some randomness
         eval_number += random.randint(-1, 1)
 
-        return eval_number
+        current_board.push(move)
+
+        eval_number += constraint_value(current_board.is_checkmate(), 1000)
         # white = constraint_value(current_board.is_checkmate(), -1e9)
 
         # If the board is checkmate then we should
@@ -247,6 +249,8 @@ class BasicMinMaxPlayer(Player):
         # if current_board.turn == chess.BLACK:
         # white = constraint_value(current_board.is_checkmate(), 1e9)
         # black = constraint_value(current_board.is_checkmate(), -1e9)
+        current_board.pop()
+        return eval_number
 
 
 def basic_game():
@@ -333,6 +337,6 @@ def tournament(games_in_match=3, wait=0):
 
 if __name__ == "__main__":
 
-    random.seed = 1
+    random.seed(1)
     tournament()
     # basic_game()
