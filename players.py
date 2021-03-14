@@ -41,6 +41,7 @@ def min_max(
             # _ = board.pop()
 
         try:
+            eval_value = context.eval_move(move, board)
             eval_value = context.eval_move(move, board) + level_eval
         except TypeError:
             print(context.eval_move(move, board))

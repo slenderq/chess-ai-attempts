@@ -154,8 +154,10 @@ def tournament(games_in_match=3, wait=0):
             winner = match[best_index]
             loser = match[abs(best_index - 1)]
 
-            print(f"{winner} won the match! {score}")
+            print(f"✔ {winner} won the match! {score}")
             print(f"{loser} lost the match!")
+
+        time.sleep(wait)
 
         temp_elo = match[0].elo
         match[0].elo += (match[1].elo + (400 * (score[0] - score[1]))) / games_in_match
@@ -163,6 +165,8 @@ def tournament(games_in_match=3, wait=0):
 
     sorted_list = sorted(all_players, key=lambda x: x.elo, reverse=True)
 
+    os.system("cls" if os.name == "nt" else "clear")
+    print("✔ ", end="")
     for player in sorted_list:
         print(f"{player} ELO: {player.str_elo}")
 
