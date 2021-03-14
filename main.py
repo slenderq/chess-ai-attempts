@@ -93,12 +93,19 @@ def game_loop(white, black, wait=0, printing=True):
 
         time.sleep(wait)
 
+        old_board = board.fen()
+
         if board.turn == chess.WHITE:
-            move = white.get_move(board.copy())
+            move = white.get_move(board)
         elif board.turn == chess.BLACK:
-            move = black.get_move(board.copy())
+            move = black.get_move(board)
         else:
             raise Exception
+
+        # Making sure no funny business is going on
+        assert old_board == board.fen()
+
+        assert move is not None
         board.push(move)
 
     return board.result()
@@ -175,23 +182,26 @@ class BasicMinMaxPlayer(Player):
         move, level_eval = self.min_max(board)
         return move
 
-    def min_max(self, board, search_depth=2, max=True, alpha=-math.inf, beta=math.inf):
+    def min_max(
+        self, board, search_depth=2, max_player=True, alpha=-math.inf, beta=math.inf
+    ):
 
         best_move = None
         best_eval = math.inf
-        if max:
-            best_eval *= -1
+        if max_player:
+            best_eval = best_eval * -1
 
         for move in board.legal_moves:
 
-            new_board = board.copy()
             level_eval = 0
 
             if search_depth != 0:
-                new_board.push(move)
+                board.push(move)
                 _, level_eval = self.min_max(
-                    new_board, search_depth=search_depth - 1, max=not max
+                    board, search_depth=search_depth - 1, max_player=not max_player
                 )
+
+                _ = board.pop()
 
             try:
                 eval_value = self.eval_move(move, board) + level_eval
@@ -199,7 +209,7 @@ class BasicMinMaxPlayer(Player):
                 print(self.eval_move(move, board))
                 print(level_eval)
 
-            if max:
+            if max_player:
                 if best_eval < eval_value:
                     best_eval = eval_value
                     best_move = move
@@ -323,5 +333,6 @@ def tournament(games_in_match=3, wait=0):
 
 if __name__ == "__main__":
 
+    random.seed = 1
     tournament()
     # basic_game()
