@@ -80,6 +80,7 @@ def min_max(
     beta=math.inf,
     save_tree=False,
     sum_children=False,
+    queue=None,
 ):
     if search_depth is None:
         search_depth = context.search_depth
@@ -98,12 +99,21 @@ def min_max(
 
         level_eval = 0
 
-        if search_depth != 0 and not board.is_game_over():
+        if search_depth != 0:
             board.push(move)
 
+            local_queue = multiprocessing.Queue()
             # spawn a new thread
             args = (context, board.copy(), search_depth - 1, not max_player)
-            multiprocessing.Process(target=min_max, args=args)
+            p = multiprocessing.Process(
+                target=min_max, args=args, kwargs={"queue": local_queue}
+            )
+            p.start()
+
+            # Wait for this to finish
+            p.join()
+
+            best_move, best_eval = local_queue.get()
 
             _ = board.pop()
 
@@ -125,8 +135,8 @@ def min_max(
                 best_eval = eval_value
                 best_move = move
 
-    for process in processes:
-        process.join()
+    if queue is not None:
+        queue.put([best_move, best_eval])
 
     return best_move, best_eval
 

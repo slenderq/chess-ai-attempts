@@ -108,17 +108,17 @@ def basic_game():
 
 def tournament(games_in_match=3, wait=0):
     all_players = [
-        # players.RandomPlayer(),
-        # players.CapturePlayer(),
+        players.RandomPlayer(),
+        players.CapturePlayer(),
         # players.BasicMinMaxPlayer(search_depth=14),
         # players.BasicMinMaxPlayer(search_depth=11),
         # players.BasicMinMaxPlayer(search_depth=7),
         # players.BasicMinMaxPlayer(search_depth=5),
-        players.BetterMinMaxPlayer(search_depth=5),
+        players.BetterMinMaxPlayer(search_depth=2),
         # players.BetterMinMaxPlayer(search_depth=8),
-        players.BetterMinMaxPlayer(search_depth=3),
-        players.BasicMinMaxPlayer(search_depth=3),
-        players.BasicMinMaxPlayer(search_depth=1),
+        players.BetterMinMaxPlayer(search_depth=2),
+        # players.BasicMinMaxPlayer(search_depth=3),
+        # players.BasicMinMaxPlayer(search_depth=1),
     ]
 
     bracket = list(
