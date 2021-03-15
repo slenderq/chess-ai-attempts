@@ -91,18 +91,21 @@ def min_max(
     if max_player:
         best_eval = best_eval * -1
 
+    if board.is_game_over():
+        return None, 0
+
     for move in board.legal_moves:
 
         level_eval = 0
 
-        if search_depth != 0:
-            # board.push(move)
+        if search_depth != 0 and not board.is_game_over():
+            board.push(move)
 
             # spawn a new thread
             args = (context, board.copy(), search_depth - 1, not max_player)
             multiprocessing.Process(target=min_max, args=args)
 
-            # _ = board.pop()
+            _ = board.pop()
 
         try:
             if sum_children:
@@ -263,8 +266,8 @@ class BetterMinMaxPlayer(Player):
         turn = current_board.turn
         eval_number = 0
 
-        eval_number += constraint_value(current_board.gives_check(move), 1000)
-        eval_number += constraint_value(current_board.is_capture(move), 1000)
+        eval_number += constraint_value(current_board.gives_check(move), 100)
+        eval_number += constraint_value(current_board.is_capture(move), 100)
 
         eval_number += constraint_value(current_board.is_castling(move), 50)
         # eval_number += constraint_value(current_board.gives_check(move), 1000)
@@ -272,7 +275,28 @@ class BetterMinMaxPlayer(Player):
         # Add some randomness
         eval_number += random.randint(-1, 1)
 
+        our_legal_moves = len(list(current_board.legal_moves))
+
         current_board.push(move)
+
+        if current_board.is_game_over():
+            result = current_board.result()
+
+            if result == "1-0":
+                score_change = 1
+            if result == "0-1":
+                score_change = -1
+            if result == "1/2-1/2":
+                score_change = -0.5
+
+            if turn == chess.BLACK:
+                score_change *= -1
+            eval_number += score_change * 100
+        their_legal_moves = len(list(current_board.legal_moves))
+
+        move_differentail = our_legal_moves - their_legal_moves
+
+        eval_number += move_differentail * 10
 
         eval_number += constraint_value(current_board.is_checkmate(), 100)
 
@@ -307,5 +331,3 @@ class BetterMinMaxPlayer(Player):
 
         current_board.pop()
         return eval_number
-
-        pass

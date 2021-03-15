@@ -91,7 +91,10 @@ def basic_game():
     # white = CapturePlayer()
 
     white = players.HumanPlayer()
-    black = players.HumanPlayer()
+
+    # black = players.BetterMinMaxPlayer(search_depth=5)
+    black = players.BasicMinMaxPlayer(search_depth=1)
+    # black = players.HumanPlayer()
 
     result = game_loop(white, black, wait=0.01)
 
@@ -105,14 +108,14 @@ def basic_game():
 
 def tournament(games_in_match=3, wait=0):
     all_players = [
-        players.RandomPlayer(),
-        players.CapturePlayer(),
+        # players.RandomPlayer(),
+        # players.CapturePlayer(),
         # players.BasicMinMaxPlayer(search_depth=14),
         # players.BasicMinMaxPlayer(search_depth=11),
         # players.BasicMinMaxPlayer(search_depth=7),
-        players.BasicMinMaxPlayer(search_depth=5),
+        # players.BasicMinMaxPlayer(search_depth=5),
         players.BetterMinMaxPlayer(search_depth=5),
-        players.BetterMinMaxPlayer(search_depth=8),
+        # players.BetterMinMaxPlayer(search_depth=8),
         players.BetterMinMaxPlayer(search_depth=3),
         players.BasicMinMaxPlayer(search_depth=3),
         players.BasicMinMaxPlayer(search_depth=1),
@@ -183,6 +186,6 @@ def tournament(games_in_match=3, wait=0):
 
 if __name__ == "__main__":
 
-    random.seed(1)
+    # random.seed(1)
     tournament()
     # basic_game()
