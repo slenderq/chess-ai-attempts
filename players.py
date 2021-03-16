@@ -97,46 +97,55 @@ def min_max(
 
     for move in board.legal_moves:
 
-        level_eval = 0
-
         if search_depth != 0:
             board.push(move)
 
-            local_queue = multiprocessing.Queue()
             # spawn a new thread
-            args = (context, board.copy(), search_depth - 1, not max_player)
-            p = multiprocessing.Process(
-                target=min_max, args=args, kwargs={"queue": local_queue}
+            _, node_value = min_max(
+                context,
+                board.copy(stack=2),
+                search_depth - 1,
+                not max_player,
+                alpha=alpha,
+                beta=beta,
             )
-            p.start()
-
-            # Wait for this to finish
-            p.join()
-
-            best_move, best_eval = local_queue.get()
 
             _ = board.pop()
 
-        try:
-            if sum_children:
-                eval_value = context.eval_move(move, board) + level_eval
-            else:
-                eval_value = context.eval_move(move, board)
-        except TypeError:
-            print(context.eval_move(move, board))
-            print(level_eval)
+        else:
+            # If we are at the bottom already
+            node_value = context.eval_move(move, board)
+
+        # try:
+        # if sum_children:
+        # node_value = context.eval_move(move, board) + level_eval
+        # else:
+        # node_value = context.eval_move(move, board)
+        # except TypeError:
+        # print(context.eval_move(move, board))
+        # print(level_eval)
 
         if max_player:
-            if best_eval < eval_value:
-                best_eval = eval_value
-                best_move = move
-        else:
-            if best_eval > eval_value:
-                best_eval = eval_value
+            if best_eval < node_value:
+                best_eval = node_value
                 best_move = move
 
-    if queue is not None:
-        queue.put([best_move, best_eval])
+            if node_value > beta:
+                return best_move, best_eval
+
+            if node_value > alpha:
+                alpha = node_value
+
+        else:
+            if best_eval > node_value:
+                best_eval = node_value
+                best_move = move
+
+            if node_value < alpha:
+                return best_move, best_eval
+
+            if node_value < beta:
+                beta = node_value
 
     return best_move, best_eval
 
@@ -231,7 +240,7 @@ class BasicMinMaxPlayer(Player):
         Return:
             int
         """
-        current_board = current_board.copy()
+        current_board = current_board.copy(stack=2)
 
         turn = current_board.turn
         eval_number = 0
@@ -271,7 +280,7 @@ class BetterMinMaxPlayer(Player):
         Return:
             int
         """
-        current_board = current_board.copy(stack=10)
+        current_board = current_board.copy(stack=2)
 
         turn = current_board.turn
         eval_number = 0
