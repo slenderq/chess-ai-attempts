@@ -80,7 +80,6 @@ def min_max(
     beta=math.inf,
     save_tree=False,
     sum_children=False,
-    queue=None,
 ):
     if search_depth is None:
         search_depth = context.search_depth
@@ -97,25 +96,26 @@ def min_max(
 
     for move in board.legal_moves:
 
-        if search_depth != 0:
-            board.push(move)
+        board.push(move)
 
+        if search_depth == 0 or board.is_game_over():
+
+            # If we are at the bottom already
+            node_value = context.eval_board(board)
+
+        else:
             # spawn a new thread
+
             _, node_value = min_max(
                 context,
-                board.copy(stack=2),
+                board.copy(stack=1),
                 search_depth - 1,
                 not max_player,
                 alpha=alpha,
                 beta=beta,
             )
 
-            _ = board.pop()
-
-        else:
-            # If we are at the bottom already
-            node_value = context.eval_move(move, board)
-
+        _ = board.pop()
         # try:
         # if sum_children:
         # node_value = context.eval_move(move, board) + level_eval
@@ -234,31 +234,19 @@ class BasicMinMaxPlayer(Player):
         previous = super().__str__()
         return previous + " " + str(self.search_depth)
 
-    def eval_move(self, move, current_board):
-        """Get a value for the goodness of a board
+    def eval_board(self, current_board):
 
-        Return:
-            int
-        """
-        current_board = current_board.copy(stack=2)
+        # Turn is who played the last move
+        last_turn = not current_board.turn
 
-        turn = current_board.turn
         eval_number = 0
 
-        eval_number += constraint_value(current_board.gives_check(move), 1000)
-
-        eval_number += constraint_value(current_board.is_capture(move), 1000)
-
-        # Add some randomness
-        eval_number += random.randint(-1, 1)
-
-        current_board.push(move)
+        eval_number += count_pieces(current_board, last_turn)
 
         eval_number += constraint_value(current_board.is_checkmate(), 1000)
 
-        eval_number += count_pieces(current_board, turn)
+        eval_number += constraint_value(current_board.is_stalemate(), -100)
 
-        current_board.pop()
         return eval_number
 
 
@@ -274,79 +262,118 @@ class BetterMinMaxPlayer(Player):
         previous = super().__str__()
         return previous + " " + str(self.search_depth)
 
+    def eval_board(self, current_board):
+
+        # Turn is who played the last move
+        last_turn = not current_board.turn
+
+        eval_number = 0
+
+        eval_number += count_pieces(current_board, last_turn)
+        # eval_number += random.randint(-1, 1)
+
+        eval_number += constraint_value(current_board.is_checkmate(), 1000)
+
+        eval_number += constraint_value(current_board.is_stalemate(), -100)
+
+        # current_board.push(move)
+
+        # if current_board.is_game_over():
+        #     result = current_board.result()
+
+        #     if result == "1-0":
+        #         score_change = 1
+        #     if result == "0-1":
+        #         score_change = -1
+        #     if result == "1/2-1/2":
+        #         score_change = -0.5
+
+        #     if turn == chess.BLACK:
+        #         score_change *= -1
+        #     eval_number += score_change * 100
+        # move_differentail = our_legal_moves - their_legal_moves
+
+        # their_legal_moves = len(list(current_board.legal_moves))
+        # eval_number += 500 / (their_legal_moves + 1)
+
+        # their_legal_moves = len(list(current_board.legal_moves))
+        # move_differentail = our_legal_moves - their_legal_moves
+        # eval_number += move_differentail * 10
+
+        return eval_number
+
     def eval_move(self, move, current_board):
         """Get a value for the goodness of a board
 
         Return:
             int
         """
-        current_board = current_board.copy(stack=2)
+        return 0
+        # current_board = current_board.copy(stack=False)
 
-        turn = current_board.turn
-        eval_number = 0
+        # turn = current_board.turn
+        # eval_number = 0
 
-        eval_number += constraint_value(current_board.gives_check(move), 100)
-        eval_number += constraint_value(current_board.is_capture(move), 100)
+        # eval_number += constraint_value(current_board.gives_check(move), 100)
+        # eval_number += constraint_value(current_board.is_capture(move), 100)
 
-        eval_number += constraint_value(current_board.is_castling(move), 50)
-        # eval_number += constraint_value(current_board.gives_check(move), 1000)
+        # eval_number += constraint_value(current_board.is_castling(move), 50)
+        # # eval_number += constraint_value(current_board.gives_check(move), 1000)
 
-        # Add some randomness
-        eval_number += random.randint(-1, 1)
+        # # Add some randomness
+        # eval_number += random.randint(-1, 1)
 
-        our_legal_moves = len(list(current_board.legal_moves))
+        # our_legal_moves = len(list(current_board.legal_moves))
 
-        current_board.push(move)
+        # current_board.push(move)
 
-        if current_board.is_game_over():
-            result = current_board.result()
+        # if current_board.is_game_over():
+        #     result = current_board.result()
 
-            if result == "1-0":
-                score_change = 1
-            if result == "0-1":
-                score_change = -1
-            if result == "1/2-1/2":
-                score_change = -0.5
+        #     if result == "1-0":
+        #         score_change = 1
+        #     if result == "0-1":
+        #         score_change = -1
+        #     if result == "1/2-1/2":
+        #         score_change = -0.5
 
-            if turn == chess.BLACK:
-                score_change *= -1
-            eval_number += score_change * 100
-        their_legal_moves = len(list(current_board.legal_moves))
+        #     if turn == chess.BLACK:
+        #         score_change *= -1
+        #     eval_number += score_change * 100
+        # their_legal_moves = len(list(current_board.legal_moves))
+        # move_differentail = our_legal_moves - their_legal_moves
+        # eval_number += move_differentail * 10
 
-        move_differentail = our_legal_moves - their_legal_moves
+        # eval_number += constraint_value(current_board.is_checkmate(), 100)
 
-        eval_number += move_differentail * 10
+        # eval_number += constraint_value(current_board.is_stalemate(), -100)
 
-        eval_number += constraint_value(current_board.is_checkmate(), 100)
+        # eval_number += count_pieces(current_board, turn)
 
-        eval_number += constraint_value(current_board.is_stalemate(), -100)
+        # # attacker detection
+        # for our_piece_square in all_pieces(current_board, turn):
 
-        eval_number += count_pieces(current_board, turn)
+        #     # Check that we are not getting attacked!
+        #     eval_number += constraint_value(
+        #         current_board.is_attacked_by(not turn, our_piece_square), -100
+        #     )
 
-        # attacker detection
-        for our_piece_square in all_pieces(current_board, turn):
+        #     # Check that we are not getting pinned!
+        #     eval_number += constraint_value(
+        #         current_board.is_pinned(turn, our_piece_square), -100
+        #     )
 
-            # Check that we are not getting attacked!
-            eval_number += constraint_value(
-                current_board.is_attacked_by(not turn, our_piece_square), -100
-            )
+        # for their_piece_square in all_pieces(current_board, not turn):
 
-            # Check that we are not getting pinned!
-            eval_number += constraint_value(
-                current_board.is_pinned(turn, our_piece_square), -100
-            )
+        #     # Try to attack when you can
+        #     eval_number += constraint_value(
+        #         current_board.is_attacked_by(turn, their_piece_square), 100
+        #     )
 
-        for their_piece_square in all_pieces(current_board, not turn):
+        #     # Check that we are not getting pinned!
+        #     eval_number += constraint_value(
+        #         current_board.is_pinned(turn, their_piece_square), 100
+        #     )
 
-            # Try to attack when you can
-            eval_number += constraint_value(
-                current_board.is_attacked_by(turn, their_piece_square), 100
-            )
-
-            # Check that we are not getting pinned!
-            eval_number += constraint_value(
-                current_board.is_pinned(turn, their_piece_square), 100
-            )
-
-        current_board.pop()
-        return eval_number
+        # current_board.pop()
+        # return eval_number
