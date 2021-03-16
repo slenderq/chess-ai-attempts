@@ -7,6 +7,8 @@ import math
 
 import players
 
+import argparse
+
 # https://github.com/niklasf/python-chess
 
 
@@ -92,8 +94,8 @@ def basic_game():
 
     white = players.HumanPlayer()
 
-    # black = players.BetterMinMaxPlayer(search_depth=5)
-    black = players.BasicMinMaxPlayer(search_depth=1)
+    black = players.BetterMinMaxPlayer(search_depth=3)
+    # black = players.BasicMinMaxPlayer(search_depth=1)
     # black = players.HumanPlayer()
 
     result = game_loop(white, black, wait=0.01)
@@ -186,7 +188,12 @@ def tournament(games_in_match=2, wait=0):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--play", help="play the computer", action="store_true")
+    args = parser.parse_args()
 
+    if args.play:
+        basic_game()
+    else:
+        tournament()
     # random.seed(1)
-    tournament()
-    # basic_game()

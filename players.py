@@ -276,29 +276,34 @@ class BetterMinMaxPlayer(Player):
 
         eval_number += constraint_value(current_board.is_stalemate(), -100)
 
+        eval_number += constraint_value(current_board.is_check(), 100)
+
+        eval_number += constraint_value(
+            current_board.has_castling_rights(not last_turn), -100
+        )
+        # prev_board = current_board.copy(stack=1)
+        # last_move = prev_board.pop()
+
+        # eval_number += constraint_value(prev_board.has_castling_rights(last_turn), 100)
         # current_board.push(move)
 
         # if current_board.is_game_over():
         #     result = current_board.result()
 
+        #     score_change = 0
         #     if result == "1-0":
         #         score_change = 1
-        #     if result == "0-1":
+        #     elif result == "0-1":
         #         score_change = -1
-        #     if result == "1/2-1/2":
-        #         score_change = -0.5
 
-        #     if turn == chess.BLACK:
+        #     if last_turn == chess.WHITE:
         #         score_change *= -1
+
+        #     if result == "1/2-1/2":
+        #         score_change = -1
+        #     # Both players dislike draws
+
         #     eval_number += score_change * 100
-        # move_differentail = our_legal_moves - their_legal_moves
-
-        # their_legal_moves = len(list(current_board.legal_moves))
-        # eval_number += 500 / (their_legal_moves + 1)
-
-        # their_legal_moves = len(list(current_board.legal_moves))
-        # move_differentail = our_legal_moves - their_legal_moves
-        # eval_number += move_differentail * 10
 
         return eval_number
 
