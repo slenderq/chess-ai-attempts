@@ -126,7 +126,7 @@ def _min_max(
         if search_depth == 0 or board.is_game_over():
 
             # If we are at the bottom already
-            node_value = context.eval_board(board)
+            node_value = context.eval_board(board.fen())
 
         else:
             # spawn a new thread
@@ -266,9 +266,9 @@ class BasicMinMaxPlayer(Player):
         previous = super().__str__()
         return previous + " " + str(self.search_depth)
 
-    def eval_board(self, current_board):
+    def eval_board(self, current_board_fen):
 
-        # current_board = chess.Board(fen=current_board_fen)
+        current_board = chess.Board(fen=current_board_fen)
         # Turn is who played the last move
         last_turn = not current_board.turn
 

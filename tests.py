@@ -2,8 +2,15 @@ import unittest
 import players
 import chess
 
+import multiprocessing as mp
+import os
+
 import main
 from time import time
+
+
+def do_something(number):
+    return number ** 2
 
 
 class UtilitesTest(unittest.TestCase):
@@ -50,3 +57,10 @@ class UtilitesTest(unittest.TestCase):
 
         process_time = end - start
         self.assertLessEqual(process_time, 30)
+
+    @unittest.skip("just want the lower test")
+    def test_pool(self):
+
+        array_of_numbers = [x for x in range(0, 100000)]
+        with mp.Pool(os.cpu_count()) as p:
+            print(p.map(do_something, array_of_numbers))
