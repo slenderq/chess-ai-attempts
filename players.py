@@ -200,6 +200,13 @@ class RandomPlayer(Player):
         return random_move(board)
 
 
+class TestPlayer(Player):
+    """Basic player is only there to test mini-max"""
+
+    def eval_board(self, current_board):
+        pass
+
+
 class CapturePlayer(Player):
     """This player will make random moves but will always capture"""
 

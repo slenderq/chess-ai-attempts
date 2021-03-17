@@ -120,9 +120,9 @@ def tournament(games_in_match=2, wait=0):
         # # players.BasicMinMaxPlayer(search_depth=2),
         # players.BetterMinMaxPlayer(search_depth=2),
         # players.BetterMinMaxPlayer(search_depth=4),
-        # players.BetterMinMaxPlayer(search_depth=3),
+        players.BetterMinMaxPlayer(search_depth=3),
         players.BetterMinMaxPlayer(search_depth=2),
-        # players.BasicMinMaxPlayer(search_depth=4),
+        players.BasicMinMaxPlayer(search_depth=4),
         # players.BasicMinMaxPlayer(search_depth=3),
         players.BasicMinMaxPlayer(search_depth=2),
         # players.BasicMinMaxPlayer(search_depth=1),
@@ -132,57 +132,62 @@ def tournament(games_in_match=2, wait=0):
         combinations(all_players, r=2),
     )
 
-    for match in bracket:
-        score = [0, 0]
+    try:
+        for match in bracket:
+            score = [0, 0]
 
-        print(f"Match {match[0]}, {match[1]}")
-        # Game
-        for i in range(0, games_in_match):
-            print(f"Game {i + 1}")
+            print(f"Match {match[0]}, {match[1]}")
+            # Game
+            for i in range(0, games_in_match):
+                print(f"Game {i + 1}")
 
-            if random.choice([True, False]):
-                white = match[0]
-                black = match[1]
+                if random.choice([True, False]):
+                    white = match[0]
+                    black = match[1]
+                else:
+                    white = match[1]
+                    black = match[0]
+
+                # TODO: It would be nice to expose the actual games for later analysis
+                result = game_loop(white, black, wait=0, printing=True)
+
+                if result == "1-0":
+                    i = match.index(white)
+                    score[i] += 1
+                    print(f"{white} wins")
+                if result == "0-1":
+                    i = match.index(black)
+                    score[i] += 1
+                    print(f"{black} wins")
+                if result == "1/2-1/2":
+                    score[0] += 0.5
+                    score[1] += 0.5
+                    print("Draw")
+
+                time.sleep(wait)
+
+            os.system("cls" if os.name == "nt" else "clear")
+            if score[0] == score[1]:
+                print(f"draw match! {score}")
             else:
-                white = match[1]
-                black = match[0]
+                best_score = max(score)
+                best_index = score.index(best_score)
+                winner = match[best_index]
+                loser = match[abs(best_index - 1)]
 
-            # TODO: It would be nice to expose the actual games for later analysis
-            result = game_loop(white, black, wait=0, printing=True)
-
-            if result == "1-0":
-                i = match.index(white)
-                score[i] += 1
-                print(f"{white} wins")
-            if result == "0-1":
-                i = match.index(black)
-                score[i] += 1
-                print(f"{black} wins")
-            if result == "1/2-1/2":
-                score[0] += 0.5
-                score[1] += 0.5
-                print("Draw")
+                print(f"✔ {winner} won the match! {score}")
+                print(f"{loser} lost the match!")
 
             time.sleep(wait)
 
-        os.system("cls" if os.name == "nt" else "clear")
-        if score[0] == score[1]:
-            print(f"draw match! {score}")
-        else:
-            best_score = max(score)
-            best_index = score.index(best_score)
-            winner = match[best_index]
-            loser = match[abs(best_index - 1)]
+            temp_elo = match[0].elo
+            match[0].elo += (
+                match[1].elo + (400 * (score[0] - score[1]))
+            ) / games_in_match
+            match[1].elo += (temp_elo + (400 * (score[1] - score[0]))) / games_in_match
 
-            print(f"✔ {winner} won the match! {score}")
-            print(f"{loser} lost the match!")
-
-        time.sleep(wait)
-
-        temp_elo = match[0].elo
-        match[0].elo += (match[1].elo + (400 * (score[0] - score[1]))) / games_in_match
-        match[1].elo += (temp_elo + (400 * (score[1] - score[0]))) / games_in_match
-
+    except KeyboardInterrupt:
+        pass
     sorted_list = sorted(all_players, key=lambda x: x.elo, reverse=True)
 
     os.system("cls" if os.name == "nt" else "clear")
