@@ -112,17 +112,17 @@ def basic_game():
 
 def tournament(games_in_match=2, wait=0):
     all_players = [
-        players.RandomPlayer(),
-        players.CapturePlayer(),
+        # players.RandomPlayer(),
+        # players.CapturePlayer(),
         # players.BasicMinMaxPlayer(search_depth=14),
         # players.BasicMinMaxPlayer(search_depth=11),
         # players.BasicMinMaxPlayer(search_depth=7),
         # # players.BasicMinMaxPlayer(search_depth=2),
         # players.BetterMinMaxPlayer(search_depth=2),
         # players.BetterMinMaxPlayer(search_depth=4),
-        players.BetterMinMaxPlayer(search_depth=3),
+        # players.BetterMinMaxPlayer(search_depth=3),
         players.BetterMinMaxPlayer(search_depth=2),
-        players.BasicMinMaxPlayer(search_depth=4),
+        # players.BasicMinMaxPlayer(search_depth=4),
         # players.BasicMinMaxPlayer(search_depth=3),
         players.BasicMinMaxPlayer(search_depth=2),
         # players.BasicMinMaxPlayer(search_depth=1),
@@ -184,7 +184,8 @@ def tournament(games_in_match=2, wait=0):
             match[0].elo += (
                 match[1].elo + (400 * (score[0] - score[1]))
             ) / games_in_match
-            match[1].elo += (temp_elo + (400 * (score[1] - score[0]))) / games_in_match
+            match[1].elo += (temp_elo +
+                             (400 * (score[1] - score[0]))) / games_in_match
 
     except KeyboardInterrupt:
         pass
@@ -198,7 +199,8 @@ def tournament(games_in_match=2, wait=0):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--play", help="play the computer", action="store_true")
+    parser.add_argument("--play", help="play the computer",
+                        action="store_true")
     args = parser.parse_args()
 
     if args.play:
