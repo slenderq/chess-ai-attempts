@@ -111,8 +111,6 @@ def _min_max(
     if search_depth is None:
         search_depth = context.search_depth
 
-    # TODO: Actually add ab pruning here
-    processes = []
     best_move = None
     best_eval = math.inf
     if max_player:
@@ -270,6 +268,7 @@ class BasicMinMaxPlayer(Player):
 
     def eval_board(self, current_board):
 
+        # current_board = chess.Board(fen=current_board_fen)
         # Turn is who played the last move
         last_turn = not current_board.turn
 
