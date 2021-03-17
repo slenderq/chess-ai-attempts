@@ -4,6 +4,8 @@ import math
 import random
 import multiprocessing
 
+from functools import lru_cache
+
 
 def constraint_value(bool_chk, value):
     if bool_chk:
@@ -81,6 +83,31 @@ def min_max(
     save_tree=False,
     sum_children=False,
 ):
+
+    return _min_max(
+        context,
+        board.fen(),
+        search_depth=None,
+        max_player=True,
+        alpha=-math.inf,
+        beta=math.inf,
+        save_tree=False,
+        sum_children=False,
+    )
+
+
+@lru_cache(maxsize=1000)
+def _min_max(
+    context,
+    board_fen,
+    search_depth=None,
+    max_player=True,
+    alpha=-math.inf,
+    beta=math.inf,
+    save_tree=False,
+    sum_children=False,
+):
+    board = chess.Board(fen=board_fen)
     if search_depth is None:
         search_depth = context.search_depth
 
@@ -106,9 +133,9 @@ def min_max(
         else:
             # spawn a new thread
 
-            _, node_value = min_max(
+            _, node_value = _min_max(
                 context,
-                board.copy(stack=1),
+                board.fen(),
                 search_depth - 1,
                 not max_player,
                 alpha=alpha,
