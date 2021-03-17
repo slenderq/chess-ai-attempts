@@ -44,6 +44,7 @@ class UtilitesTest(unittest.TestCase):
 
         # with self.subTest():
 
+    @unittest.skip("just want the lower test")
     def test_min_max_perf(self):
 
         white = players.BasicMinMaxPlayer(search_depth=2)

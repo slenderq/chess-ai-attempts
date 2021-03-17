@@ -26,19 +26,22 @@ def count_pieces(current_board, turn):
     white = 0
     black = 0
 
-    color = chess.WHITE
-    white += len(current_board.pieces(chess.PAWN, color)) * 1
-    white += len(current_board.pieces(chess.KNIGHT, color)) * 3
-    white += len(current_board.pieces(chess.BISHOP, color)) * 3
-    white += len(current_board.pieces(chess.ROOK, color)) * 5
-    white += len(current_board.pieces(chess.QUEEN, color)) * 9
+    board_fen = current_board.fen()
 
-    color = chess.BLACK
-    black += len(current_board.pieces(chess.PAWN, color)) * 1
-    black += len(current_board.pieces(chess.KNIGHT, color)) * 3
-    black += len(current_board.pieces(chess.BISHOP, color)) * 3
-    black += len(current_board.pieces(chess.ROOK, color)) * 5
-    black += len(current_board.pieces(chess.QUEEN, color)) * 9
+    board_string = board_fen.split(" ")[0]
+    # color = chess.WHITE
+    white += board_string.count("P") * 1
+    white += board_string.count("N") * 3
+    white += board_string.count("B") * 3
+    white += board_string.count("R") * 5
+    white += board_string.count("Q") * 9
+
+    # color = chess.BLACK
+    black += board_string.count("p") * 1
+    black += board_string.count("n") * 3
+    black += board_string.count("b") * 3
+    black += board_string.count("r") * 5
+    black += board_string.count("q") * 9
 
     if turn == chess.BLACK:
         differential = black - white
