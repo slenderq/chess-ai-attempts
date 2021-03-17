@@ -65,6 +65,8 @@ def game_loop(white, black, wait=0, printing=True):
     while not board.is_game_over():
         if printing:
             os.system("cls" if os.name == "nt" else "clear")
+            print(f"♟ {str(black)}")
+            print(f"♙ {str(white)}")
             print_board(board)
 
         time.sleep(wait)
@@ -117,8 +119,10 @@ def tournament(games_in_match=2, wait=0):
         # players.BasicMinMaxPlayer(search_depth=7),
         # # players.BasicMinMaxPlayer(search_depth=2),
         # players.BetterMinMaxPlayer(search_depth=2),
-        # players.BetterMinMaxPlayer(search_depth=8),
+        # players.BetterMinMaxPlayer(search_depth=4),
+        # players.BetterMinMaxPlayer(search_depth=3),
         players.BetterMinMaxPlayer(search_depth=2),
+        # players.BasicMinMaxPlayer(search_depth=4),
         # players.BasicMinMaxPlayer(search_depth=3),
         players.BasicMinMaxPlayer(search_depth=2),
         # players.BasicMinMaxPlayer(search_depth=1),
@@ -144,7 +148,7 @@ def tournament(games_in_match=2, wait=0):
                 black = match[0]
 
             # TODO: It would be nice to expose the actual games for later analysis
-            result = game_loop(white, black, wait=0, printing=False)
+            result = game_loop(white, black, wait=0, printing=True)
 
             if result == "1-0":
                 i = match.index(white)

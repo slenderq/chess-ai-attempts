@@ -25,27 +25,27 @@ def count_pieces(current_board, turn):
     black = 0
 
     color = chess.WHITE
-    white += sum(current_board.pieces(chess.PAWN, color)) * 1
-    white += sum(current_board.pieces(chess.KNIGHT, color)) * 3
-    white += sum(current_board.pieces(chess.BISHOP, color)) * 3
-    white += sum(current_board.pieces(chess.ROOK, color)) * 5
-    white += sum(current_board.pieces(chess.QUEEN, color)) * 9
+    white += len(current_board.pieces(chess.PAWN, color)) * 1
+    white += len(current_board.pieces(chess.KNIGHT, color)) * 3
+    white += len(current_board.pieces(chess.BISHOP, color)) * 3
+    white += len(current_board.pieces(chess.ROOK, color)) * 5
+    white += len(current_board.pieces(chess.QUEEN, color)) * 9
 
     color = chess.BLACK
-    black += sum(current_board.pieces(chess.PAWN, color)) * 1
-    black += sum(current_board.pieces(chess.KNIGHT, color)) * 3
-    black += sum(current_board.pieces(chess.BISHOP, color)) * 3
-    black += sum(current_board.pieces(chess.ROOK, color)) * 5
-    black += sum(current_board.pieces(chess.QUEEN, color)) * 9
+    black += len(current_board.pieces(chess.PAWN, color)) * 1
+    black += len(current_board.pieces(chess.KNIGHT, color)) * 3
+    black += len(current_board.pieces(chess.BISHOP, color)) * 3
+    black += len(current_board.pieces(chess.ROOK, color)) * 5
+    black += len(current_board.pieces(chess.QUEEN, color)) * 9
 
     if turn == chess.BLACK:
         differential = black - white
     else:  # chess.WHITE
         differential = white - black
 
-    eval_number = differential * 10
+    # eval_number = differential * 100
 
-    return eval_number
+    return differential
 
 
 def all_pieces(current_board, color):
@@ -241,7 +241,7 @@ class BasicMinMaxPlayer(Player):
 
         eval_number = 0
 
-        eval_number += count_pieces(current_board, last_turn)
+        eval_number += count_pieces(current_board, last_turn) * 100
 
         eval_number += constraint_value(current_board.is_checkmate(), 1000)
 
