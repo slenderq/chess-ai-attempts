@@ -1,19 +1,42 @@
 # https://juliabyexample.helpmanual.io/#Packages-and-Including-of-Files
-
+# https://riptutorial.com/julia-lang
 using Chess
 # https://romstad.github.io/Chess.jl/dev/
+# https://docs.julialang.org/en/v1/manual/types/#Composite-Types-1
 println("Hello!")
 
 # struct BasicPlayer
 
 # end
-# struct HumanPlayer
+struct HumanPlayer
     # player::BasicPlayer
 
-# end
+end
 
-function print_board(g)
-    board_string = string(board(g))
+function makemove(player::HumanPlayer, board::Board)
+    error = true
+
+    move = Nothing
+    while error
+        try
+            move = readline()
+            board = domove(board, move)
+            error=false
+
+        catch 
+            print("❌ ")
+        end
+    end
+
+    return board
+end
+
+function gameover(b::Board)
+    return isstalemate(b) || ischeckmate(b)
+
+end
+function print_board(b::Board)
+    board_string = string(b)
 
     board_string = replace(board_string,"r" => "♜")
 
@@ -55,8 +78,15 @@ function print_board(g)
 end
 function game_loop()
 
-    g = Game()
-    print_board(g)
+    b = startboard()
+
+    player = HumanPlayer()
+    while !gameover(b)
+        run(`clear`)
+        print_board(b)
+
+        b = makemove(player, b)
+    end
 
 
 end
