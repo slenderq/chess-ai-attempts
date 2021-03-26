@@ -11,9 +11,17 @@ mutable struct RandomPlayer
         new(elo)
     end
 end
+mutable struct MiniMaxPlayer
+    elo::Float32 
+    depth::Integer
+
+    function MiniMaxPlayer(elo, depth::Integer)
+        new(elo, depth)
+    end
+
+end
 
 mutable struct HumanPlayer
-    # player::BasicPlayer
     elo::Float32 
 
     function HumanPlayer(elo)
@@ -45,7 +53,6 @@ end
 function makemove(player::RandomPlayer, board::Board)
     mlist = []
     mlist = moves(board)
-
     m = choice(mlist)
   
     # println(m)
@@ -56,7 +63,83 @@ function makemove(player::RandomPlayer, board::Board)
 
 end
 
+function minimax(player, board::Board, search_depth::Integer)
+    return minimax(player, board, search_depth, true, -Inf, Inf)
+end
 
+function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, alpha::Float64, beta::Float64)
+    
+    # Random move
+    # m = choice(mlist)
+    # Arbitry move
+    best_move::Move = Move(Square(FILE_D, RANK_5), Square(FILE_D, RANK_5))
+    best_eval::Float64 = Inf
+
+
+    if maxplayer
+        best_eval = best_eval * -1
+    end
+
+    mlist = moves(board)
+
+    for move in mlist
+
+        # Create a board with the new move 
+        p_board = domove(board, move)
+        if search_depth == 0 || !isterminal(board)
+            eval = eval_board(player, p_board)
+        else
+            old_move, eval = minimax(player, board, search_depth, maxplayer, alpha, beta)
+        end
+    
+
+        if maxplayer
+            if best_eval < eval
+                best_eval = eval
+                best_move = move
+            end
+
+            if eval > beta
+                return best_move, best_eval
+            end
+
+            if eval > alpha
+                alpha = eval
+            end
+
+        else
+            if best_eval > eval
+                best_eval = eval
+                best_move = move
+            end
+
+            if eval < alpha
+                return best_move, best_eval
+            end
+
+            if eval < beta
+                beta = eval
+            end
+
+        end
+    end
+    return best_move, best_eval
+
+    return m, 0
+end
+
+function eval_board(player::MiniMaxPlayer, board::Board)
+    return rand(1:100)
+end
+
+function makemove(player::MiniMaxPlayer, board::Board)
+    println("MiniMax Move")
+    move, eval = minimax(player, board, player.depth)
+
+    board = domove(board, move)
+
+    return board
+end
 function makemove(player::HumanPlayer, board::Board)
     error = true
 
@@ -142,7 +225,7 @@ end
 
 function basic_game()
     white = HumanPlayer(400)
-    black = RandomPlayer(400)
+    black = MiniMaxPlayer(400, 2)
 
     game_loop(white, black, true)
 end
@@ -207,8 +290,6 @@ function tournament(games_in_match, board_printing::Bool)
 
             end
 
-            # 2 is the number of
-
             if score[1] == score[2] 
                 if match[1].elo > match[2].elo
                     winner_id = 1
@@ -254,6 +335,6 @@ function tournament(games_in_match, board_printing::Bool)
     println("$tournament_winner wins the tournament")
 end
 
-tournament(3, false)
+# tournament(3, false)
 
-# basic_game()
+basic_game()
