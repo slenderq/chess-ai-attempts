@@ -5,13 +5,41 @@ using Chess
 # https://docs.julialang.org/en/v1/manual/types/#Composite-Types-1
 println("Hello!")
 
-# struct BasicPlayer
+struct RandomPlayer
+    color::PieceColor
+    function RandomPlayer(color)
+        new(color)
+    end
+end
 
-# end
-struct HumanPlayer
-    # player::BasicPlayer
+function makemove(player::RandomPlayer, board::Board)
+    mlist = []
+    mlist = moves(board)
+
+    n = length(mlist)
+
+    idx = rand(1:n)
+
+    m = mlist[idx]
+
+    println(m)
+
+    board = domove(board, m)
+    return board
+    
 
 end
+struct HumanPlayer
+    # elo::Int8
+    # player::BasicPlayer
+    color::PieceColor
+
+    function HumanPlayer(color)
+        new(color)
+    end
+
+end
+
 
 function makemove(player::HumanPlayer, board::Board)
     error = true
@@ -80,12 +108,16 @@ function game_loop()
 
     b = startboard()
 
-    player = HumanPlayer()
+    white = HumanPlayer(WHITE)
+    black = RandomPlayer(BLACK)
     while !gameover(b)
         run(`clear`)
         print_board(b)
-
-        b = makemove(player, b)
+        if sidetomove(b) == WHITE
+            b = makemove(white, b)
+        elseif sidetomove(b) == BLACK
+            b = makemove(black, b)
+        end
     end
 
 
