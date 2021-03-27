@@ -128,12 +128,58 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
     return m, 0
 end
 
+function countpices(board::Board, forcolor::PieceColor)
+
+    # https://en.wikipedia.org/wiki/Chess_piece_relative_value
+    # TODO: This could actually be more complex
+    board_fen = fen(board)
+
+    white::Float64 = 0
+    black::Float64 = 0
+
+    # Only care about the pieces
+    board_string = split(board_fen," ")[1]
+    # color = chess.WHITE
+    white += count(i->(i=="P"), board_string) * 1
+    white += count(i->(i=="N"), board_string) * 3
+    white += count(i->(i=="B"), board_string) * 3
+    white += count(i->(i=="R"), board_string) * 5
+    white += count(i->(i=="Q"), board_string) * 9
+
+    # color = chess.BLACK
+    black += count(i->(i=="p"), board_string) * 1
+    black += count(i->(i=="n"), board_string) * 3
+    black += count(i->(i=="b"), board_string) * 3
+    black += count(i->(i=="r"), board_string) * 5
+    black += count(i->(i=="q"), board_string) * 9
+
+    if forcolor == BLACK
+        differential = black - white
+    else  # chess.WHITE
+        differential = white - black
+    end
+
+
+    return differential
+
+end
+
 function eval_board(player::MiniMaxPlayer, board::Board)
-    return rand(1:100)
+
+    forcolor = flip(sidetomove(board))
+
+    eval::Float64 = 0
+    # Basic capturing
+    eval += countpices(board, forcolor)
+
+    eval += ischeckmate(board) ? 1000 : 0
+
+    eval += isterminal(board) ? -100 : 0
+
+    return eval
 end
 
 function makemove(player::MiniMaxPlayer, board::Board)
-    println("MiniMax Move")
     move, eval = minimax(player, board, player.depth)
 
     board = domove(board, move)
@@ -225,7 +271,7 @@ end
 
 function basic_game()
     white = HumanPlayer(400)
-    black = MiniMaxPlayer(400, 2)
+    black = MiniMaxPlayer(400, 8)
 
     game_loop(white, black, true)
 end
@@ -234,7 +280,8 @@ tournament(games_in_match) = tournament(games_in_match, true)
 
 function tournament(games_in_match, board_printing::Bool)
 
-    allplayers = [RandomPlayer(400), RandomPlayer(600), RandomPlayer(200), RandomPlayer(100)]
+    allplayers = [MiniMaxPlayer(400, 8), MiniMaxPlayer(400, 4), MiniMaxPlayer(400, 2), RandomPlayer(100)]
+    # [RandomPlayer(400), RandomPlayer(600), RandomPlayer(200), RandomPlayer(100)]
     
 
     if length(allplayers) % 2 == 1
@@ -335,6 +382,6 @@ function tournament(games_in_match, board_printing::Bool)
     println("$tournament_winner wins the tournament")
 end
 
-# tournament(3, false)
+tournament(3, false)
 
-basic_game()
+# basic_game()
