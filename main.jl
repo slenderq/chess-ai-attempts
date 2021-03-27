@@ -424,7 +424,12 @@ function tournament(games_in_match, board_printing::Bool)
     println(allplayers)
 end
 
-tournament(13, false)
+function main()
 
+    tournament(13, false)
+    # basic_game()
+end
 
-# basic_game()
+if abspath(PROGRAM_FILE) == @__FILE__
+    main()
+end
