@@ -305,7 +305,7 @@ function basic_game()
     white = HumanPlayer(400)
     black = MiniMaxPlayer(400, 1)
 
-    game_loop(white, black, false)
+    game_loop(white, black, true)
 end
 
 tournament(games_in_match) = tournament(games_in_match, true)
