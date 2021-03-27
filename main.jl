@@ -170,18 +170,18 @@ end
 function development_rating(board::Board, forcolor::PieceColor)
 
 
-    rating = 5
+    rating = 0
 
 
     for square in pieces(board, forcolor)
-
+        
         if forcolor == WHITE
             if (rank(square) != RANK_1 && rank(square) != RANK_2) && pieceon(board, square) != KING
-                rating -= 1
+                rating = rating + 1
             end
         else
             if (rank(square) != RANK_7 && rank(square) != RANK_8) && pieceon(board, square) != KING
-                rating -= 1
+                rating = rating + 1
             end
 
         end
