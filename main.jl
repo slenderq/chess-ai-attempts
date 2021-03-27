@@ -164,6 +164,32 @@ function countpices(board::Board, forcolor::PieceColor)
 
 end
 
+
+function development_rating(board::Board, forcolor::PieceColor)
+
+
+    rating = 5
+
+
+    for square in pieces(board, forcolor)
+
+        if forcolor == WHITE
+            if (rank(square) != RANK_1 && rank(square) != RANK_2) && pieceon(board, square) != KING
+                rating -= 1
+            end
+        else
+            if (rank(square) != RANK_7 && rank(square) != RANK_8) && pieceon(board, square) != KING
+                rating -= 1
+            end
+
+        end
+    
+    end
+    # file(square)
+
+    return rating
+end
+
 function eval_board(player::MiniMaxPlayer, board::Board)
 
     forcolor = flip(sidetomove(board))
@@ -176,6 +202,7 @@ function eval_board(player::MiniMaxPlayer, board::Board)
 
     eval += isterminal(board) ? -100 : 0
 
+    eval += development_rating(board, forcolor) * 10
     
     return eval
 end
@@ -392,6 +419,7 @@ function tournament(games_in_match, board_printing::Bool)
     println("$tournament_winner wins the tournament")
 end
 
-tournament(3, false)
+# tournament(3, false)
 
-# basic_game()
+
+basic_game()
