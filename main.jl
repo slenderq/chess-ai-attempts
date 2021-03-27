@@ -130,7 +130,7 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
 
 end
 
-function countpices(board::Board, forcolor::PieceColor)
+function countpieces(board::Board, forcolor::PieceColor)
 
     # https://en.wikipedia.org/wiki/Chess_piece_relative_value
     # TODO: This could actually be more complex
@@ -142,18 +142,18 @@ function countpices(board::Board, forcolor::PieceColor)
     # Only care about the pieces
     board_string = split(board_fen," ")[1]
     # color = chess.WHITE
-    white += count(i->(i=="P"), board_string) * 1
-    white += count(i->(i=="N"), board_string) * 3
-    white += count(i->(i=="B"), board_string) * 3
-    white += count(i->(i=="R"), board_string) * 5
-    white += count(i->(i=="Q"), board_string) * 9
+    white += count(i->(i=='P'), board_string) * 1
+    white += count(i->(i=='N'), board_string) * 3
+    white += count(i->(i=='B'), board_string) * 3
+    white += count(i->(i=='R'), board_string) * 5
+    white += count(i->(i=='Q'), board_string) * 9
 
     # color = chess.BLACK
-    black += count(i->(i=="p"), board_string) * 1
-    black += count(i->(i=="n"), board_string) * 3
-    black += count(i->(i=="b"), board_string) * 3
-    black += count(i->(i=="r"), board_string) * 5
-    black += count(i->(i=="q"), board_string) * 9
+    black += count(i->(i=='p'), board_string) * 1
+    black += count(i->(i=='n'), board_string) * 3
+    black += count(i->(i=='b'), board_string) * 3
+    black += count(i->(i=='r'), board_string) * 5
+    black += count(i->(i=='q'), board_string) * 9
 
     if forcolor == BLACK
         differential = black - white
@@ -198,7 +198,7 @@ function eval_board(player::MiniMaxPlayer, board::Board)
 
     eval::Float64 = 0
     # Basic capturing
-    eval += countpices(board, forcolor) * 100
+    eval += countpieces(board, forcolor) * 100
 
     eval += ischeckmate(board) ? 1000 : 0
 
