@@ -4,6 +4,7 @@ using Chess
 # https://romstad.github.io/Chess.jl/dev/
 # https://docs.julialang.org/en/v1/manual/types/#Composite-Types-1
 
+using ArgParse
 
 include("utils.jl")
 include("players.jl")
@@ -43,7 +44,8 @@ tournament(games_in_match) = tournament(games_in_match, true)
 
 function tournament(games_in_match, board_printing::Bool)
 
-    allplayers = [MiniMaxPlayer(400, 16), MiniMaxPlayer(400, 32), MiniMaxPlayer(400, 2), RandomPlayer(100)]
+    allplayers = [MiniMaxPlayer(400, 16), MiniMaxPlayer(400, 32), MiniMaxPlayer(400, 2), RandomPlayer(100),
+                    BetterMiniMaxPlayer(400, 3), BetterMiniMaxPlayer(400, 16), ]
     # [RandomPlayer(400), RandomPlayer(600), RandomPlayer(200), RandomPlayer(100)]
     
 
@@ -151,16 +153,36 @@ function tournament(games_in_match, board_printing::Bool)
     end
 
     tournament_winner = current_braket[1]
-    println("$tournament_winner wins the tournament")
-    println(allplayers)
+    # println("$tournament_winner wins the tournament")
+    rankings = sort(allplayers,by = x -> x.elo, rev=true)
+    for i in 1:length(rankings)
+        if i == 1
+            print(" 👑 ")
+        else
+            print("    ")
+        end
+        println(rankings[i])
+    
+    end
 end
 
-function main()
-
-    tournament(13, false)
-    # basic_game()
-end
 
 if abspath(PROGRAM_FILE) == @__FILE__
-    main()
+
+    s = ArgParseSettings()
+    @add_arg_table! s begin
+        "--tournament"
+            help = "run a tournament will all the ai"
+            action = :store_true
+        "--play"
+            help = "play the ai"
+            action = :store_true
+    end
+    parsed_args = parse_args(ARGS, s)
+    if parsed_args["tournament"]
+        tournament(13, false)
+    end
+    if parsed_args["play"]
+        basic_game()
+    end
 end
