@@ -44,8 +44,8 @@ tournament(games_in_match) = tournament(games_in_match, true)
 
 function tournament(games_in_match, board_printing::Bool)
 
-    allplayers = [MiniMaxPlayer(400, 16), MiniMaxPlayer(400, 32), MiniMaxPlayer(400, 2), RandomPlayer(100),
-                    BetterMiniMaxPlayer(400, 3), BetterMiniMaxPlayer(400, 16), ]
+    allplayers = [MiniMaxPlayer(400, 2), MiniMaxPlayer(400, 4), MiniMaxPlayer(400, 1), RandomPlayer(100),
+                    BetterMiniMaxPlayer(400, 4), BetterMiniMaxPlayer(400, 2), ]
     # [RandomPlayer(400), RandomPlayer(600), RandomPlayer(200), RandomPlayer(100)]
     
 
@@ -180,7 +180,7 @@ if abspath(PROGRAM_FILE) == @__FILE__
     end
     parsed_args = parse_args(ARGS, s)
     if parsed_args["tournament"]
-        tournament(13, false)
+        tournament(3, false)
     end
     if parsed_args["play"]
         basic_game()
