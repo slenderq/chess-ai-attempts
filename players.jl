@@ -1,12 +1,11 @@
-
 using Chess
 mutable struct RandomPlayer
-
     elo::Float32
     function RandomPlayer(elo)
         new(elo)
     end
 end
+
 mutable struct MiniMaxPlayer
     elo::Float32 
     depth::Integer
@@ -14,9 +13,7 @@ mutable struct MiniMaxPlayer
     function MiniMaxPlayer(elo, depth::Integer)
         new(elo, depth)
     end
-
 end
-
 mutable struct BetterMiniMaxPlayer
     elo::Float32 
     depth::Integer
@@ -24,8 +21,17 @@ mutable struct BetterMiniMaxPlayer
     function BetterMiniMaxPlayer(elo, depth::Integer)
         new(elo, depth)
     end
-
 end
+
+mutable struct TimerMiniMaxPlayer
+    elo::Float32 
+    depth::Integer
+
+    function TimerMiniMaxPlayer(elo, depth::Integer)
+        new(elo, depth)
+    end
+end
+
 mutable struct HumanPlayer
     elo::Float32 
 
@@ -34,7 +40,6 @@ mutable struct HumanPlayer
     end
 
 end
-
 
 function eval_board(player::BetterMiniMaxPlayer, board::Board)
 
@@ -67,6 +72,20 @@ function eval_board(player::MiniMaxPlayer, board::Board)
 end
 
 #  Make moves
+
+function makemove(player::TimerMiniMaxPlayer, board::Board)
+    move, eval = minimax(player, board, player.depth)
+    try
+        board = domove(board, move)
+    catch err
+        println(board)
+        println(move)
+        throw(err)
+    end
+    return board
+end
+
+
 
 function makemove(player::RandomPlayer, board::Board)
     mlist = []
