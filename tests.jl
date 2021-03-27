@@ -1,6 +1,10 @@
 include("main.jl")
 
+include("utils.jl")
+include("players.jl")
+
 using Test
+using Chess
 # testing that piece counting works 
 function test_piece_count()
     @test countpieces(fromfen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"), BLACK) == 0
@@ -18,6 +22,16 @@ function test_min_max()
 
 end
 
+function test_min_max_fail()
+
+    b = fromfen("r7/5k2/1p3ppn/p2p4/Pn3PP1/KP5P/1RR5/q7 w - -")
+    bb =fromfen("r7/5k2/1p3ppn/p2p4/P4PP1/KP5P/R1n5/q7 w - - 0 2")
+    p = MiniMaxPlayer(400, 2)
+    # println(isterminal(bb))
+    # println(ischeckmate(bb))
+    new_b = makemove(p, b)
+end
+
 function test_development()
     @test development_rating(fromfen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq"), WHITE) == 0
     @test development_rating(fromfen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1"), WHITE) == 1
@@ -27,6 +41,7 @@ end
 
 function run()
     # test_min_max()
+    test_min_max_fail()
     test_development()
     test_piece_count()
 end

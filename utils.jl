@@ -148,7 +148,7 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
 
         # Create a board with the new move 
         p_board = domove(board, move)
-        if search_depth == 0 || isterminal(board)
+        if search_depth == 0 || isterminal(p_board)
             eval = eval_board(player, p_board)
         else
             old_move, eval = minimax(player, p_board, search_depth-1, !maxplayer, alpha, beta)

@@ -81,7 +81,13 @@ end
 
 function makemove(player, board::Board)
     move, eval = minimax(player, board, player.depth)
-    board = domove(board, move)
+    try
+        board = domove(board, move)
+    catch err
+        println(board)
+        println(move)
+        throw(err)
+    end
     return board
 end
 
