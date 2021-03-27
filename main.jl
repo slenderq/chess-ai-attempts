@@ -88,8 +88,11 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
         p_board = domove(board, move)
         if search_depth == 0 || !isterminal(board)
             eval = eval_board(player, p_board)
+            # print(" $move:$eval ")
         else
-            old_move, eval = minimax(player, board, search_depth, maxplayer, alpha, beta)
+            old_move, eval = minimax(player, p_board, search_depth-1, !maxplayer, alpha, beta)
+            
+            # println()
         end
     
 
@@ -125,7 +128,6 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
     end
     return best_move, best_eval
 
-    return m, 0
 end
 
 function countpices(board::Board, forcolor::PieceColor)
@@ -203,6 +205,8 @@ function eval_board(player::MiniMaxPlayer, board::Board)
     eval += isterminal(board) ? -100 : 0
 
     eval += development_rating(board, forcolor) * 10
+
+    eval += rand(-1:1)
     
     return eval
 end
@@ -299,16 +303,16 @@ end
 
 function basic_game()
     white = HumanPlayer(400)
-    black = MiniMaxPlayer(400, 8)
+    black = MiniMaxPlayer(400, 1)
 
-    game_loop(white, black, true)
+    game_loop(white, black, false)
 end
 
 tournament(games_in_match) = tournament(games_in_match, true)
 
 function tournament(games_in_match, board_printing::Bool)
 
-    allplayers = [MiniMaxPlayer(400, 16), MiniMaxPlayer(400, 4), MiniMaxPlayer(400, 2), RandomPlayer(100)]
+    allplayers = [MiniMaxPlayer(400, 16), MiniMaxPlayer(400, 32), MiniMaxPlayer(400, 2), RandomPlayer(100)]
     # [RandomPlayer(400), RandomPlayer(600), RandomPlayer(200), RandomPlayer(100)]
     
 
@@ -417,9 +421,10 @@ function tournament(games_in_match, board_printing::Bool)
 
     tournament_winner = current_braket[1]
     println("$tournament_winner wins the tournament")
+    println(allplayers)
 end
 
-# tournament(3, false)
+tournament(13, false)
 
 
-basic_game()
+# basic_game()
