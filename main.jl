@@ -170,12 +170,13 @@ function eval_board(player::MiniMaxPlayer, board::Board)
 
     eval::Float64 = 0
     # Basic capturing
-    eval += countpices(board, forcolor)
+    eval += countpices(board, forcolor) * 100
 
     eval += ischeckmate(board) ? 1000 : 0
 
     eval += isterminal(board) ? -100 : 0
 
+    
     return eval
 end
 
@@ -280,7 +281,7 @@ tournament(games_in_match) = tournament(games_in_match, true)
 
 function tournament(games_in_match, board_printing::Bool)
 
-    allplayers = [MiniMaxPlayer(400, 8), MiniMaxPlayer(400, 4), MiniMaxPlayer(400, 2), RandomPlayer(100)]
+    allplayers = [MiniMaxPlayer(400, 16), MiniMaxPlayer(400, 4), MiniMaxPlayer(400, 2), RandomPlayer(100)]
     # [RandomPlayer(400), RandomPlayer(600), RandomPlayer(200), RandomPlayer(100)]
     
 
@@ -292,11 +293,20 @@ function tournament(games_in_match, board_printing::Bool)
     current_braket = allplayers
     while length(current_braket) > 1
         matches = []
-        for i in 1:(length(current_braket) - 1)
+        
+        i = 1
+        while i < length(current_braket)
             push!(matches,[current_braket[i], current_braket[i + 1]])
+            i += 2
         end
+        # for i in 1:(length(current_braket) - 1)
+
+            # if i % 2 == 0
+            # end
+        # end
 
         next_braket = []
+        println("Matches $matches")
         for match in matches
             score = [0.0, 0.0]
             
