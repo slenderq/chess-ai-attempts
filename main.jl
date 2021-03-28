@@ -13,7 +13,13 @@ function gameover(b::Board)
     return isstalemate(b) || ischeckmate(b)
 
 end
+
+
 function game_loop(white, black, printing::Bool)
+    return  game_loop(white, black, printing::Bool, "")
+end
+
+function game_loop(white, black, printing::Bool, header_string)
 
     b = startboard()
 
@@ -21,6 +27,7 @@ function game_loop(white, black, printing::Bool)
         if printing
             run(`clear`)
             print_board(b)
+            println(header_string)
         end
         if sidetomove(b) == WHITE
             b = makemove(white, b)
@@ -44,7 +51,7 @@ tournament(games_in_match) = tournament(games_in_match, true)
 
 function tournament(games_in_match, board_printing::Bool)
 
-    allplayers = [MiniMaxPlayer(400, 2), TimerMiniMaxPlayer(400, 1, 10), TimerMiniMaxPlayer(400, 1, 3), BetterMiniMaxPlayer(400, 2), MiniMaxPlayer(400, 1), RandomPlayer(100)]
+    allplayers = [MiniMaxPlayer(400, 2), TimerMiniMaxPlayer(400, 1, 0.5), BetterMiniMaxPlayer(400, 2), RandomPlayer(100)]
                     
     # [RandomPlayer(400), RandomPlayer(600), RandomPlayer(200), RandomPlayer(100)]
     
@@ -86,7 +93,7 @@ function tournament(games_in_match, board_printing::Bool)
                 end
 
                 println("   Game: $white $black ")
-                b = game_loop(white, black, board_printing)
+                b = game_loop(white, black, board_printing,"Game: $white $black")
 
                 draw = false
                 if ischeckmate(b)
@@ -180,7 +187,7 @@ if abspath(PROGRAM_FILE) == @__FILE__
     end
     parsed_args = parse_args(ARGS, s)
     if parsed_args["tournament"]
-        tournament(3, true)
+        tournament(1, true)
     end
     if parsed_args["play"]
         basic_game()

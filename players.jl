@@ -81,27 +81,12 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
     
     move::Move = Move(Square(FILE_D, RANK_5), Square(FILE_D, RANK_5))
 
-    time_est::Float64 = 0
-    est_exp::Float64 = 2
-    growth::Float64 = 0
-    last_time::Float64 = 0
-
     while time() - starttime < player.processtime
 
-        # if last_time != 0
-            # est_exp = last_time^(1/depth)
-            # time_est = est_exp^(depth + 1)
 
-        # end
-
-        # print("depth $depth est: $time_est ")
         move, eval = minimax(player, board, depth)
         time_depth = time() - starttime
 
-        # last_time = time_depth
-        # est_exp = time_depth^(1/(depth + 1))
-
-        # println("actual: $time_depth")
         depth += 1
     end
 

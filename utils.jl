@@ -145,6 +145,7 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
     mlist = moves(board)
 
     for move in mlist
+    # Threads.@threads for move in mlist
 
         # Create a board with the new move 
         p_board = domove(board, move)
