@@ -39,11 +39,24 @@ function test_development()
 
 end
 
+function test_time()
+    t = time()
+    b = startboard()
+    timer_time = 920.0
+    p = TimerMiniMaxPlayer(400, 1, timer_time)
+
+    new_b = makemove(p, b)
+    # @test timer_time  
+    println(time()-t)
+    println(timer_time)
+
+end
 function run()
     # test_min_max()
     test_min_max_fail()
     test_development()
     test_piece_count()
+    test_time()
 end
 run()
 println("Tests pass!")

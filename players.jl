@@ -25,10 +25,11 @@ end
 
 mutable struct TimerMiniMaxPlayer
     elo::Float32 
-    depth::Integer
+    startdepth::Integer
+    processtime::Union{Integer,Float64}
 
-    function TimerMiniMaxPlayer(elo, depth::Integer)
-        new(elo, depth)
+    function TimerMiniMaxPlayer(elo, startdepth::Integer, processtime::Union{Integer,Float64})
+        new(elo, startdepth, processtime)
     end
 end
 
@@ -41,7 +42,7 @@ mutable struct HumanPlayer
 
 end
 
-function eval_board(player::BetterMiniMaxPlayer, board::Board)
+function eval_board(player::Union{BetterMiniMaxPlayer, TimerMiniMaxPlayer}, board::Board)
 
     forcolor = flip(sidetomove(board))
     eval::Float64 = 0
@@ -74,7 +75,36 @@ end
 #  Make moves
 
 function makemove(player::TimerMiniMaxPlayer, board::Board)
-    move, eval = minimax(player, board, player.depth)
+    
+    starttime = time()
+    depth = player.startdepth
+    
+    move::Move = Move(Square(FILE_D, RANK_5), Square(FILE_D, RANK_5))
+
+    time_est::Float64 = 0
+    est_exp::Float64 = 2
+    growth::Float64 = 0
+    last_time::Float64 = 0
+
+    while time() - starttime < player.processtime
+
+        # if last_time != 0
+            # est_exp = last_time^(1/depth)
+            # time_est = est_exp^(depth + 1)
+
+        # end
+
+        # print("depth $depth est: $time_est ")
+        move, eval = minimax(player, board, depth)
+        time_depth = time() - starttime
+
+        # last_time = time_depth
+        # est_exp = time_depth^(1/(depth + 1))
+
+        # println("actual: $time_depth")
+        depth += 1
+    end
+
     try
         board = domove(board, move)
     catch err
