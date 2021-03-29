@@ -70,6 +70,7 @@ function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Boar
     eval += countpieces(board, forcolor) * 100
     eval += ischeckmate(board) ? 1000 : 0
     eval += isterminal(board) ? -100 : 0
+    eval += basic_pstable(board, forcolor)
 
     # eval += rand(-1:1)
     
