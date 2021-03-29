@@ -242,7 +242,7 @@ function basic_pstable(b::Board, forcolor::PieceColor)
 
     
     if forcolor == BLACK
-        board = flip(board)
+        board = flip(b)
     else
         board = b
     end
@@ -273,8 +273,7 @@ function basic_pstable(b::Board, forcolor::PieceColor)
         end
 
 
-        println(table[ranktonum(rank_item), filetonum(file_item)])
-        # table_eval = println(table[ranktonum(rank_item), filetonum(file_item)])
+        table_eval = table[ranktonum(rank_item), filetonum(file_item)]
         # println(table_eval)
         
     end
