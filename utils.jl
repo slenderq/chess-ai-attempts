@@ -1,26 +1,27 @@
 
 using Chess
 
+time_from_now(seconds) = round(Int, 10^9 * seconds + time_ns())
 
 function print_board(b::Board)
     board_string = string(b)
 
-    board_string = replace(board_string,"r" => "♜")
+    board_string = replace(board_string, "r" => "♜")
 
-    board_string = replace(board_string, "n"=> "♞")
-    board_string = replace(board_string, "b"=> "♝")
-    board_string = replace(board_string, "q"=> "♛")
-    board_string = replace(board_string, "k"=> "♚")
-    board_string = replace(board_string, "p"=> "♟")
+    board_string = replace(board_string, "n" => "♞")
+    board_string = replace(board_string, "b" => "♝")
+    board_string = replace(board_string, "q" => "♛")
+    board_string = replace(board_string, "k" => "♚")
+    board_string = replace(board_string, "p" => "♟")
 
-    board_string = replace(board_string, "R"=> "♖")
-    board_string = replace(board_string, "N"=> "♘")
-    board_string = replace(board_string, "B"=> "♗")
-    board_string = replace(board_string, "Q"=> "♕")
-    board_string = replace(board_string, "K"=> "♔")
-    board_string = replace(board_string, "P"=> "♙")
+    board_string = replace(board_string, "R" => "♖")
+    board_string = replace(board_string, "N" => "♘")
+    board_string = replace(board_string, "B" => "♗")
+    board_string = replace(board_string, "Q" => "♕")
+    board_string = replace(board_string, "K" => "♔")
+    board_string = replace(board_string, "P" => "♙")
 
-    board_string = replace(board_string, "-"=> "□")
+    board_string = replace(board_string, "-" => "□")
 
     board_list = split(board_string, "\n")
 
@@ -31,7 +32,7 @@ function print_board(b::Board)
 
     i = 8
     for row in board_list[2:length(board_list)]
-        new_row = string(i, " ",row, " ", i)
+        new_row = string(i, " ", row, " ", i)
 
         push!(new_board_list, new_row)
 
@@ -99,20 +100,20 @@ function countpieces(board::Board, forcolor::PieceColor)
     black::Float64 = 0
 
     # Only care about the pieces
-    board_string = split(board_fen," ")[1]
+    board_string = split(board_fen, " ")[1]
     # color = chess.WHITE
-    white += count(i->(i=='P'), board_string) * 1
-    white += count(i->(i=='N'), board_string) * 3
-    white += count(i->(i=='B'), board_string) * 3
-    white += count(i->(i=='R'), board_string) * 5
-    white += count(i->(i=='Q'), board_string) * 9
+    white += count(i -> (i == 'P'), board_string) * 1
+    white += count(i -> (i == 'N'), board_string) * 3
+    white += count(i -> (i == 'B'), board_string) * 3
+    white += count(i -> (i == 'R'), board_string) * 5
+    white += count(i -> (i == 'Q'), board_string) * 9
 
     # color = chess.BLACK
-    black += count(i->(i=='p'), board_string) * 1
-    black += count(i->(i=='n'), board_string) * 3
-    black += count(i->(i=='b'), board_string) * 3
-    black += count(i->(i=='r'), board_string) * 5
-    black += count(i->(i=='q'), board_string) * 9
+    black += count(i -> (i == 'p'), board_string) * 1
+    black += count(i -> (i == 'n'), board_string) * 3
+    black += count(i -> (i == 'b'), board_string) * 3
+    black += count(i -> (i == 'r'), board_string) * 5
+    black += count(i -> (i == 'q'), board_string) * 9
 
     if forcolor == BLACK
         differential = black - white
@@ -152,7 +153,7 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
         if search_depth == 0 || isterminal(p_board)
             eval = eval_board(player, p_board)
         else
-            old_move, eval = minimax(player, p_board, search_depth-1, !maxplayer, alpha, beta)
+            old_move, eval = minimax(player, p_board, search_depth - 1, !maxplayer, alpha, beta)
         end
     
 

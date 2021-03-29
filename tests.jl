@@ -43,7 +43,7 @@ function test_time()
     # https://discourse.julialang.org/t/break-function-on-time-limit/7376/10
     t = time()
     b = startboard()
-    timer_time = 920.0
+    timer_time = 20.0
     p = TimerMiniMaxPlayer(400, 1, timer_time)
 
     new_b = makemove(p, b)
@@ -54,6 +54,10 @@ function test_time()
 end
 
 function rapid_engie_test(player)
+    rapid_engie_test(player, false)
+end
+
+function rapid_engie_test(player, debug::Bool)
     # https://www.chessprogramming.org/Eigenmann_Rapid_Engine_Test#Forum_Posts
 
     tests = [
@@ -178,10 +182,15 @@ function rapid_engie_test(player)
 
         if move == answer
             passed_tests += 1
-            print(" ✔")
+            if debug
+                print(" ✔")
+            end
         else
             push!(failed, [fen(board), answer, move])
-            print(" $move $answer ❌")
+            if debug
+                print(" $move $answer ")
+                print("❌")
+            end
         end
     end
     println()
@@ -192,7 +201,11 @@ end
 function run()
     # test_min_max()
 
-    rapid_engie_test(BetterMiniMaxPlayer(400, 2))
+    # rapid_engie_test(BetterMiniMaxPlayer(400, 2)) 1/111
+    # rapid_engie_test(BetterMiniMaxPlayer(400, 3)) 9/111
+    # rapid_engie_test(MiniMaxPlayer(400, 4)) # ?/111
+    # rapid_engie_test(MiniMaxPlayer(400, 3)) # 13/111
+    # rapid_engie_test(MiniMaxPlayer(400, 2))# 8/111
     
     test_min_max_fail()
     test_development()

@@ -42,7 +42,7 @@ mutable struct HumanPlayer
 
 end
 
-function eval_board(player::Union{BetterMiniMaxPlayer,TimerMiniMaxPlayer}, board::Board)
+function eval_board(player::BetterMiniMaxPlayer, board::Board)
 
     forcolor = flip(sidetomove(board))
     eval::Float64 = 0
@@ -59,7 +59,7 @@ end
 
 
 
-function eval_board(player::MiniMaxPlayer, board::Board)
+function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Board)
 
     forcolor = flip(sidetomove(board))
     eval::Float64 = 0
@@ -80,10 +80,31 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
     depth = player.startdepth
     
     move::Move = Move(Square(FILE_D, RANK_5), Square(FILE_D, RANK_5))
+    eval::Float64 = 0
+    found_move = false
 
     while time() - starttime < player.processtime
-        move, eval = minimax(player, board, depth)
+    # move, eval =
+
+        # not using the generic because I don't know julia
+        # https://discourse.julialang.org/t/break-function-on-time-limit/7376/7
+        t = @async minimax(player, board, depth)
+        end_time = time_from_now(player.processtime)
+        while time_ns() <= end_time
+            sleep(0.1)
+            if istaskdone(t)
+                move, eval = fetch(t)
+                found_move = true
+                break
+            end
+        end
+
         depth += 1
+    end
+    # end
+    if !found_move
+        mlist = moves(board)
+        m = choice(mlist)
     end
 
     try
@@ -104,7 +125,6 @@ function makemove(player::RandomPlayer, board::Board)
     m = choice(mlist)
   
     # println(m)
-
     board = domove(board, m)
     return board
 end
