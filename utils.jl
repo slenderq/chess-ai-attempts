@@ -2,6 +2,8 @@
 using Chess
 using Memoize
 
+include("tables.jl")
+
 time_from_now(seconds) = round(Int, 10^9 * seconds + time_ns())
 
 function print_board(b::Board)
@@ -199,3 +201,84 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
 
 end
 
+function is_endgame(board::Board) 
+
+    white = 0
+    black = 0
+
+    board_fen = fen(board)
+    board_string = split(board_fen, " ")[1]
+
+    white += count(i -> (i == 'Q'), board_string) 
+    black += count(i -> (i == 'q'), board_string) 
+
+    if white == 0 && black == 0
+        return true
+    elseif white == 1 && black == 1
+        return false
+    end
+
+    white = 0
+    black = 0
+
+    black += count(i -> (i == 'n'), board_string) 
+    black += count(i -> (i == 'b'), board_string) 
+    black += count(i -> (i == 'r'), board_string)
+    white += count(i -> (i == 'N'), board_string) 
+    white += count(i -> (i == 'B'), board_string) 
+    white += count(i -> (i == 'R'), board_string)
+
+
+    if black <= 1 && white <= 1 
+        return true
+    end
+
+    return false
+
+end
+
+function basic_pstable(b::Board, forcolor::PieceColor)
+    # https://www.chessprogramming.org/PeSTO%27s_Evaluation_Function
+
+    
+    if forcolor == BLACK
+        board = flip(board)
+    else
+        board = b
+    end
+
+    table = []
+    table_eval::Integer = 0
+    for square in pieces(board, forcolor)
+        rank_item = rank(square)
+        file_item = file(square)
+
+        piece_type = ptype(pieceon(board, square))
+
+        table = nothing
+        if is_endgame(board)
+            table = piece_type == PAWN ? eg_pawn_table : table
+            table = piece_type == KNIGHT ? eg_knight_table : table
+            table = piece_type == BISHOP ? eg_bishop_table : table
+            table = piece_type == ROOK ? eg_rook_table : table
+            table = piece_type == QUEEN ? eg_queen_table : table
+            table = piece_type == KING ? eg_king_table : table
+        else
+            table = piece_type == PAWN ? mg_pawn_table : table
+            table = piece_type == KNIGHT ? mg_knight_table : table
+            table = piece_type == BISHOP ? mg_bishop_table : table
+            table = piece_type == ROOK ? mg_rook_table : table
+            table = piece_type == QUEEN ? mg_queen_table : table
+            table = piece_type == KING ? mg_king_table : table
+        end
+
+
+        println(table[ranktonum(rank_item), filetonum(file_item)])
+        # table_eval = println(table[ranktonum(rank_item), filetonum(file_item)])
+        # println(table_eval)
+        
+    end
+    return table_eval
+end
+
+    

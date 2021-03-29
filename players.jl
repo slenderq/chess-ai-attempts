@@ -48,16 +48,14 @@ end
     forcolor = flip(sidetomove(board))
     eval::Float64 = 0
 
-    eval += countpieces(board, forcolor) * 1000
-    eval += ischeck(board) ? 100 : 0
+    eval += countpieces(board, forcolor) * 100
     eval += ischeckmate(board) ? 1000 : 0
     eval += isterminal(board) ? -100 : 0
-    eval += development_rating(board, forcolor) * 100
-    eval += rand(-1:1)
+    # eval += development_rating(board, forcolor) * 100
+    # eval += rand(-1:1)
     
     return eval
 end
-
 
 
 # @memoize function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Board)
@@ -96,21 +94,21 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
         while time() - starttime < player.processtime
             sleep(0.1)
             # println("waiting... $(time() - starttime)")
-            if istaskdone(t)
+        if istaskdone(t)
                 move, eval = fetch(t)
                 found_move = true
                 break
             end
         end
-
+        
         sleep(0.1)
-        depth += 1
+    depth += 1
     end
     # end
     if !found_move
         mlist = moves(board)
         m = choice(mlist)
-    end
+end
 
     try
         board = domove(board, move)
@@ -152,7 +150,7 @@ function makemove(player::HumanPlayer, board::Board)
     move = Nothing
     while error
         try
-            move = readline()
+move = readline()
             board = domove(board, move)
     error = false
 
