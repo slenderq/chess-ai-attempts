@@ -42,7 +42,7 @@ end
 
 function basic_game()
     white = HumanPlayer(400)
-    black = MiniMaxPlayer(400, 1)
+    black = TimerMiniMaxPlayer(400, 1, 4)
 
     game_loop(white, black, true)
 end
@@ -67,7 +67,7 @@ function tournament(games_in_match, board_printing::Bool)
         
         i = 1
         while i < length(current_braket)
-            push!(matches,[current_braket[i], current_braket[i + 1]])
+            push!(matches, [current_braket[i], current_braket[i + 1]])
             i += 2
         end
         # for i in 1:(length(current_braket) - 1)
@@ -93,11 +93,11 @@ function tournament(games_in_match, board_printing::Bool)
                 end
 
                 println("   Game: $white $black ")
-                b = game_loop(white, black, board_printing,"Game: $white $black")
+                b = game_loop(white, black, board_printing, "Game: $white $black")
 
                 draw = false
                 if ischeckmate(b)
-                    winner_color = flip(sidetomove(b))
+                    winner_color = flipcolor(sidetomove(b))
 
                     if winner_color == WHITE
                         winner = white
@@ -151,8 +151,8 @@ function tournament(games_in_match, board_printing::Bool)
 
             push!(next_braket, match_winner)
 
-        push!(braket_history, matches)
-        current_braket = next_braket
+            push!(braket_history, matches)
+            current_braket = next_braket
 
         end
 
@@ -161,7 +161,7 @@ function tournament(games_in_match, board_printing::Bool)
 
     tournament_winner = current_braket[1]
     # println("$tournament_winner wins the tournament")
-    rankings = sort(allplayers,by = x -> x.elo, rev=true)
+    rankings = sort(allplayers, by=x -> x.elo, rev=true)
     for i in 1:length(rankings)
         if i == 1
             print(" 👑 ")

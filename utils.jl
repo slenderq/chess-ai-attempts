@@ -60,7 +60,7 @@ function choice(iterable)
 
 end
 
-function flip(p::PieceColor)
+function flipcolor(p::PieceColor)
     if p == WHITE
         return BLACK
     else

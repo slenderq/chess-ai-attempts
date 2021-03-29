@@ -45,7 +45,7 @@ end
 
 @memoize function eval_board(player::BetterMiniMaxPlayer, board::Board)
 
-    forcolor = flip(sidetomove(board))
+    forcolor = flipcolor(sidetomove(board))
     eval::Float64 = 0
 
     eval += countpieces(board, forcolor) * 100
@@ -61,12 +61,16 @@ end
 # @memoize function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Board)
 function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Board)
 
-    forcolor = flip(sidetomove(board))
+    # https://romstad.github.io/Chess.jl/stable/api/#Chess.movecount
+    # Add movecount
+
+    forcolor = flipcolor(sidetomove(board))
     eval::Float64 = 0
 
     eval += countpieces(board, forcolor) * 100
     eval += ischeckmate(board) ? 1000 : 0
     eval += isterminal(board) ? -100 : 0
+
     # eval += rand(-1:1)
     
     return eval
