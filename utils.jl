@@ -1,5 +1,6 @@
 
 using Chess
+using Memoize
 
 time_from_now(seconds) = round(Int, 10^9 * seconds + time_ns())
 
@@ -132,6 +133,13 @@ end
 
 function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, alpha::Float64, beta::Float64)
     
+    # In case this needs to be interupped
+    # give the async function a chance to shine
+    
+    if rand(1:100) == 1 
+        sleep(0.0000000000000000000000000000000001)
+    end
+
     # Random move
     # m = choice(mlist)
     # Arbitry move

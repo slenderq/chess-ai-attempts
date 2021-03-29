@@ -1,4 +1,5 @@
 using Chess
+using Memoize
 mutable struct RandomPlayer
     elo::Float32
     function RandomPlayer(elo)
@@ -42,7 +43,7 @@ mutable struct HumanPlayer
 
 end
 
-function eval_board(player::BetterMiniMaxPlayer, board::Board)
+@memoize function eval_board(player::BetterMiniMaxPlayer, board::Board)
 
     forcolor = flip(sidetomove(board))
     eval::Float64 = 0
@@ -59,6 +60,7 @@ end
 
 
 
+# @memoize function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Board)
 function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Board)
 
     forcolor = flip(sidetomove(board))
@@ -67,7 +69,7 @@ function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Boar
     eval += countpieces(board, forcolor) * 100
     eval += ischeckmate(board) ? 1000 : 0
     eval += isterminal(board) ? -100 : 0
-    eval += rand(-1:1)
+    # eval += rand(-1:1)
     
     return eval
 end
@@ -84,14 +86,16 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
     found_move = false
 
     while time() - starttime < player.processtime
-    # move, eval =
+
+        # println("depth $depth")
 
         # not using the generic because I don't know julia
         # https://discourse.julialang.org/t/break-function-on-time-limit/7376/7
         t = @async minimax(player, board, depth)
-        end_time = time_from_now(player.processtime)
-        while time_ns() <= end_time
+
+        while time() - starttime < player.processtime
             sleep(0.1)
+            # println("waiting... $(time() - starttime)")
             if istaskdone(t)
                 move, eval = fetch(t)
                 found_move = true
@@ -99,6 +103,7 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
             end
         end
 
+        sleep(0.1)
         depth += 1
     end
     # end
@@ -115,7 +120,7 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
         throw(err)
     end
     return board
-end
+    end
 
 
 
@@ -139,7 +144,7 @@ function makemove(player, board::Board)
         throw(err)
     end
     return board
-end
+    end
 
 function makemove(player::HumanPlayer, board::Board)
     error = true
@@ -149,8 +154,8 @@ function makemove(player::HumanPlayer, board::Board)
         try
             move = readline()
             board = domove(board, move)
-            error = false
-        
+    error = false
+
         catch 
             print("❌ ")
         end

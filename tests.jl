@@ -201,10 +201,15 @@ end
 function run()
     # test_min_max()
 
-    # rapid_engie_test(BetterMiniMaxPlayer(400, 2)) 1/111
-    # rapid_engie_test(BetterMiniMaxPlayer(400, 3)) 9/111
-    # rapid_engie_test(MiniMaxPlayer(400, 4)) # ?/111
-    # rapid_engie_test(MiniMaxPlayer(400, 3)) # 13/111
+    # @time rapid_engie_test(BetterMiniMaxPlayer(400, 2)) 1/111
+    # @time rapid_engie_test(BetterMiniMaxPlayer(400, 3)) 9/111
+    # @time rapid_engie_test(MiniMaxPlayer(400, 4)) # ?/111
+
+    @time rapid_engie_test(MiniMaxPlayer(400, 2)) # 13/111
+    # 29.904416 seconds (120.94 M allocations: 6.192 GiB, 2.21% gc time, 4.68% compilation time)
+    # With memoize
+
+    # @time rapid_engie_test(MiniMaxPlayer(400, 1)) # 11/111
     # rapid_engie_test(MiniMaxPlayer(400, 2))# 8/111
     
     test_min_max_fail()
