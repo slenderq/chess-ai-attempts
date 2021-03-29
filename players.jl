@@ -42,7 +42,7 @@ mutable struct HumanPlayer
 
 end
 
-function eval_board(player::Union{BetterMiniMaxPlayer, TimerMiniMaxPlayer}, board::Board)
+function eval_board(player::Union{BetterMiniMaxPlayer,TimerMiniMaxPlayer}, board::Board)
 
     forcolor = flip(sidetomove(board))
     eval::Float64 = 0
@@ -82,11 +82,7 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
     move::Move = Move(Square(FILE_D, RANK_5), Square(FILE_D, RANK_5))
 
     while time() - starttime < player.processtime
-
-
         move, eval = minimax(player, board, depth)
-        time_depth = time() - starttime
-
         depth += 1
     end
 
@@ -133,8 +129,8 @@ function makemove(player::HumanPlayer, board::Board)
         try
             move = readline()
             board = domove(board, move)
-            error=false
-
+            error = false
+        
         catch 
             print("❌ ")
         end
