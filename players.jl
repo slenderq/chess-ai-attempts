@@ -1,4 +1,5 @@
 using Chess
+using Chess.Book
 using Memoize
 mutable struct RandomPlayer
     elo::Float32
@@ -30,6 +31,8 @@ mutable struct TimerMiniMaxPlayer
     processtime::Union{Integer,Float64}
 
     function TimerMiniMaxPlayer(elo, startdepth::Integer, processtime::Union{Integer,Float64})
+        bk = createbook("638_annotated_games.pgn", "Deeply_Annotated_Games.pgn","Linares_GM_Games.pgn", "spassky_1805.pgn")
+        writebooktofile(bk, "my-book.obk")
         new(elo, startdepth, processtime)
     end
 end
@@ -56,7 +59,6 @@ end
     
     return eval
 end
-
 
 # @memoize function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Board)
 function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Board)
@@ -85,36 +87,43 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
     starttime = time()
     depth = player.startdepth
     
-    move::Move = Move(Square(FILE_D, RANK_5), Square(FILE_D, RANK_5))
+    # move::Move = Move(Square(FILE_D, RANK_5), Square(FILE_D, RANK_5))
     eval::Float64 = 0
     found_move = false
 
-    while time() - starttime < player.processtime
-
-        # println("depth $depth")
-
-        # not using the generic because I don't know julia
-        # https://discourse.julialang.org/t/break-function-on-time-limit/7376/7
-        t = @async minimax(player, board, depth)
+    
+    # Openings
+    move = pickbookmove(board, "my-book.obk")
+    
+    if move === nothing
 
         while time() - starttime < player.processtime
-            sleep(0.1)
-            # println("waiting... $(time() - starttime)")
-        if istaskdone(t)
-                move, eval = fetch(t)
-                found_move = true
-                break
+
+            # println("depth $depth")
+
+            # not using the generic because I don't know julia
+            # https://discourse.julialang.org/t/break-function-on-time-limit/7376/7
+            t = @async minimax(player, board, depth)
+
+            while time() - starttime < player.processtime
+                sleep(0.1)
+                # println("waiting... $(time() - starttime)")
+                if istaskdone(t)
+                    move, eval = fetch(t)
+                    found_move = true
+                    break
+                end
             end
+            
+            sleep(0.1)
+        depth += 1
         end
-        
-        sleep(0.1)
-    depth += 1
     end
     # end
     if !found_move
         mlist = moves(board)
         m = choice(mlist)
-end
+    end
 
     try
         board = domove(board, move)
@@ -123,6 +132,7 @@ end
         println(move)
         throw(err)
     end
+
     return board
     end
 
