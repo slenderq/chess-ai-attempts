@@ -42,7 +42,7 @@ end
 
 function basic_game()
     white = HumanPlayer(400)
-    black = TimerMiniMaxPlayer(400, 1, 4)
+    black = TimerMiniMaxPlayer(400, 1, 14)
 
     game_loop(white, black, true)
 end

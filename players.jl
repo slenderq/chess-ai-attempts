@@ -67,10 +67,11 @@ function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Boar
     forcolor = flipcolor(sidetomove(board))
     eval::Float64 = 0
 
-    eval += countpieces(board, forcolor) * 100
-    eval += ischeckmate(board) ? 1000 : 0
-    eval += isterminal(board) ? -100 : 0
-    eval += basic_pstable(board, forcolor)
+    eval += countpieces(board, forcolor) * 10000
+    eval += ischeckmate(board) ? 10000 : 0
+    eval += isterminal(board) ? -1000 : 0
+    eval += basic_pstable(board, forcolor) 
+    eval += movecount(board) * 100
 
     # eval += rand(-1:1)
     

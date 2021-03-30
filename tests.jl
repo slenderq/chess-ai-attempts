@@ -108,7 +108,8 @@ function run()
     # @time rapid_engie_test(MiniMaxPlayer(400, 4)) # 14/111
 
     # @time rapid_engie_test(MiniMaxPlayer(400, 2)) # 13/111
-    # @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 14)) # 7/111
+    @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 7), true) # 13/111
+    # @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 14)) # 5/111
     # 1626.154327 seconds (7.09 G allocations: 361.913 GiB, 3.66% gc time, 0.08% compilation time
 
     # rapid_engie_test(MiniMaxPlayer(400, 2))# 8/111
