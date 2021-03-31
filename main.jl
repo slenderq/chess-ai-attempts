@@ -4,6 +4,7 @@ using Chess
 # https://romstad.github.io/Chess.jl/dev/
 # https://docs.julialang.org/en/v1/manual/types/#Composite-Types-1
 # https://juliadocs.github.io/Julia-Cheat-Sheet/
+# https://lichess.org/team/lichess-elite-database
 using ArgParse
 
 include("utils.jl")
@@ -27,6 +28,9 @@ function game_loop(white, black, printing::Bool, header_string)
         if printing
             run(`clear`)
             print_board(b)
+            if fen(b) != START_FEN
+                println("last move: $(lastmove(b))")
+            end
             println(header_string)
         end
         if sidetomove(b) == WHITE

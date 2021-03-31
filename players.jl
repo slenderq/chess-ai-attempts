@@ -1,5 +1,4 @@
 using Chess
-using Chess.Book
 using Memoize
 mutable struct RandomPlayer
     elo::Float32
@@ -31,8 +30,6 @@ mutable struct TimerMiniMaxPlayer
     processtime::Union{Integer,Float64}
 
     function TimerMiniMaxPlayer(elo, startdepth::Integer, processtime::Union{Integer,Float64})
-        bk = createbook("638_annotated_games.pgn", "Deeply_Annotated_Games.pgn","Linares_GM_Games.pgn", "spassky_1805.pgn")
-        writebooktofile(bk, "my-book.obk")
         new(elo, startdepth, processtime)
     end
 end
@@ -166,10 +163,14 @@ function makemove(player::HumanPlayer, board::Board)
     move = Nothing
     while error
         try
-move = readline()
+            if sidetomove(board) == WHITE
+                print("♙ > ")
+            else
+                print("♟ > ")
+            end
+            move = readline()
             board = domove(board, move)
-    error = false
-
+            error = false
         catch 
             print("❌ ")
         end
