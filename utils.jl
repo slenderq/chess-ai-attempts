@@ -143,6 +143,9 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
         sleep(0.0000000000000000000000000000000001)
     end
 
+    pruning = true
+    # pruning = false
+
     # Random move
     # m = choice(mlist)
     # Arbitry move
@@ -169,33 +172,38 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
     
 
         if maxplayer
-            if best_eval < eval
+            if eval > best_eval
                 best_eval = eval
                 best_move = move
             end
 
-            if eval > beta
-                return best_move, best_eval
-            end
 
-            if eval > alpha
-                alpha = eval
+            if pruning
+                if eval > alpha
+                    alpha = eval
+                end
+
+                if eval > beta
+                    return best_move, best_eval
+                end
             end
 
         else
-            if best_eval > eval
+            if  eval <  best_eval
                 best_eval = eval
                 best_move = move
             end
 
-            if eval < alpha
-                return best_move, best_eval
-            end
 
-            if eval < beta
-                beta = eval
-            end
+            if pruning
+                if eval < beta
+                    beta = eval
+                end
 
+                if eval < alpha
+                    return best_move, best_eval
+                end
+            end
         end
     end
     return best_move, best_eval

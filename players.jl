@@ -97,7 +97,6 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
 
         while time() - starttime < player.processtime
 
-            # println("depth $depth")
 
             # not using the generic because I don't know julia
             # https://discourse.julialang.org/t/break-function-on-time-limit/7376/7
@@ -115,6 +114,7 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
             
             sleep(0.1)
         depth += 1
+        # println("depth $depth")
         end
     end
     # end
@@ -131,7 +131,7 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
         throw(err)
     end
 
-    println("move eval: $eval")
+    # println("move eval: $eval")
 
     return board
     end
@@ -141,9 +141,9 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
 function makemove(player::RandomPlayer, board::Board)
     mlist = []
     mlist = moves(board)
-    m = choice(mlist)
+    # m = choice(mlist)
   
-    # println(m)
+    println(m)
     board = domove(board, m)
     return board
 end

@@ -188,6 +188,7 @@ if abspath(PROGRAM_FILE) == @__FILE__
         "--play"
             help = "play the ai"
             action = :store_true
+
     end
     parsed_args = parse_args(ARGS, s)
     if parsed_args["tournament"]
