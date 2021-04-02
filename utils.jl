@@ -9,8 +9,9 @@ time_from_now(seconds) = round(Int, 10^9 * seconds + time_ns())
 function print_board(b::Board)
     board_string = string(b)
 
-    board_string = replace(board_string, "r" => "♜")
+    fen_string = split(board_string, "\n")[1]
 
+    board_string = replace(board_string, "r" => "♜")
     board_string = replace(board_string, "n" => "♞")
     board_string = replace(board_string, "b" => "♝")
     board_string = replace(board_string, "q" => "♛")
@@ -27,7 +28,6 @@ function print_board(b::Board)
     board_string = replace(board_string, "-" => "□")
 
     board_list = split(board_string, "\n")
-
     letter_row = "   a  b  c  d  e  f  g  h"
     new_board_list = []
 
@@ -46,6 +46,7 @@ function print_board(b::Board)
     board_string = join(new_board_list, "\n")
     
     println(board_string)
+    println(fen_string)
 end
 
 function choice(iterable)

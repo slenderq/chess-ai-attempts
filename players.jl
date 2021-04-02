@@ -1,4 +1,5 @@
 using Chess
+using Chess.Book
 using Memoize
 mutable struct RandomPlayer
     elo::Float32
@@ -45,7 +46,7 @@ end
 
 @memoize function eval_board(player::BetterMiniMaxPlayer, board::Board)
 
-    forcolor = flipcolor(sidetomove(board))
+    forcolor = WHITE # flipcolor(sidetomove(board))
     eval::Float64 = 0
 
     eval += countpieces(board, forcolor) * 100
@@ -129,6 +130,8 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
         println(move)
         throw(err)
     end
+
+    println("move eval: $eval")
 
     return board
     end

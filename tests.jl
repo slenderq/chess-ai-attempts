@@ -56,14 +56,18 @@ function test_time()
 
 end
 
+
 function rapid_engie_test(player)
     rapid_engie_test(player, false)
 end
 
 function rapid_engie_test(player, debug::Bool)
+    tests = rapid_engine_table    
+end
+
+function rapid_engie_test(player, tests ,debug::Bool)
     # https://www.chessprogramming.org/Eigenmann_Rapid_Engine_Test#Forum_Posts
 
-    tests = rapid_engine_table    
     passed_tests::Integer = 0
     failed = []
 
@@ -90,7 +94,7 @@ function rapid_engie_test(player, debug::Bool)
         end
     end
     println()
-    println("Engie Test for $player: $passed_tests/111")
+    println("Engie Test for $player: $passed_tests/$(length(tests))")
 end
 
 function test_basic_pstable()
@@ -98,6 +102,10 @@ function test_basic_pstable()
     @test basic_pstable(fromfen("2bqk3/8/8/2n2r1p/8/R2P4/5N2/2BQK3 w - - 0 1"), WHITE) == 62
     @test basic_pstable(fromfen("2bqk3/8/8/2n2r1p/8/R2P4/5N2/2BQK3 w - - 0 1"), BLACK) == 18 
     
+end
+
+function test_broken_minimax()
+
 end
 
 function run()
@@ -108,7 +116,8 @@ function run()
     # @time rapid_engie_test(MiniMaxPlayer(400, 4)) # 14/111
 
     # @time rapid_engie_test(MiniMaxPlayer(400, 2)) # 13/111
-    @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 7), true) # 13/111
+    # @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 7), rapid_engine_table, true) # 13/111
+    @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 7), game_blunders, true) # 13/111
     # @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 14)) # 5/111
     # 1626.154327 seconds (7.09 G allocations: 361.913 GiB, 3.66% gc time, 0.08% compilation time
 
