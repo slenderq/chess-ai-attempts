@@ -68,8 +68,8 @@ function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Boar
     eval::Float64 = 0
 
     eval += countpieces(board, forcolor) * 10000
-    eval += ischeckmate(board) ? 10000 : 0
-    eval += isterminal(board) ? -1000 : 0
+    eval += ischeckmate(board) ? 1000000 : 0
+    eval += isterminal(board) ? -100000 : 0
     eval += basic_pstable(board, forcolor) 
     eval += movecount(board) * 100
 
