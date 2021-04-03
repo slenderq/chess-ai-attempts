@@ -82,14 +82,13 @@ function rapid_engie_test(player, tests ,debug::Bool)
 
         if move == answer
             passed_tests += 1
-            if debug
-                print(" ✔")
-            end
+            print("✔")
         else
             push!(failed, [fen(board), answer, move])
+            
+            print("❌")
             if debug
                 print(" $move $answer ")
-                print("❌")
             end
         end
     end
@@ -116,7 +115,7 @@ function run()
     # @time rapid_engie_test(MiniMaxPlayer(400, 4)) # 14/111
 
     # @time rapid_engie_test(MiniMaxPlayer(400, 2)) # 13/111
-    # @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 7), rapid_engine_table, true) # 13/111
+    @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 7), rapid_engine_table, true) # 13/111
     # @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 11), game_blunders, true) # 13/111
     # @time rapid_engie_test(MiniMaxPlayer(400, 5), game_blunders, true) # 13/111
     # @time rapid_engie_test(MiniMaxPlayer(400, 4), game_blunders, true) # 13/111
