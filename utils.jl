@@ -145,6 +145,7 @@ end
 function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, alpha::Float64, beta::Float64, last_best::Union{Missing, Move})
     # In case this needs to be interupped
     # give the async function a chance to shine
+    # print(" $search_depth")
     
     if rand(1:100) == 1 
         sleep(0.0000000000000000000000000000000001)
@@ -161,13 +162,14 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
         best_eval = best_eval * -1
     end
 
-    mlist = moves(board)
+    mlist = Array(moves(board))
 
-    if last_best != missing
-        # Priotize the move
-        # This causes one extra move to be evaled.
-        # Hoping that a transposition table makes this trival
-        prepend!(mlist, last_best)
+    if !(last_best === missing)
+        # Priotize the move that we last found
+        idx = findfirst(m -> m == last_best, mlist)
+        temp = mlist[1]
+        mlist[1] = mlist[idx]
+        mlist[idx] = temp
     end
 
     for move in mlist
