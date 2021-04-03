@@ -131,11 +131,18 @@ function countpieces(board::Board, forcolor::PieceColor)
 end
 
 function minimax(player, board::Board, search_depth::Integer)
-    return minimax(player, board, search_depth, true, -Inf, Inf)
+    return minimax(player, board, search_depth, true, -Inf, Inf, missing)
+end
+
+function minimax(player, board::Board, search_depth::Integer, last_best::Union{Missing, Move})
+    return minimax(player, board, search_depth, true, -Inf, Inf, last_best)
 end
 
 function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, alpha::Float64, beta::Float64)
-    
+    return minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, alpha::Float64, beta::Float64, missing)
+end
+
+function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, alpha::Float64, beta::Float64, last_best::Union{Missing, Move})
     # In case this needs to be interupped
     # give the async function a chance to shine
     
@@ -155,6 +162,13 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
     end
 
     mlist = moves(board)
+
+    if last_best != missing
+        # Priotize the move
+        # This causes one extra move to be evaled.
+        # Hoping that a transposition table makes this trival
+        prepend!(mlist, last_best)
+    end
 
     for move in mlist
     # Threads.@threads for move in mlist

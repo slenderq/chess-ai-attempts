@@ -101,7 +101,11 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
 
             # not using the generic because I don't know julia
             # https://discourse.julialang.org/t/break-function-on-time-limit/7376/7
-            t = @async minimax(player, board, depth)
+            if !found_move
+                t = @async minimax(player, board, depth)
+            else
+                t = @async minimax(player, board, depth, move)
+            end
 
             while time() - starttime < player.processtime
                 sleep(0.1)
