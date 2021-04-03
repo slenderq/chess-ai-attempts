@@ -136,8 +136,6 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
         throw(err)
     end
 
-    println("move eval: $eval")
-
     return board
     end
 
