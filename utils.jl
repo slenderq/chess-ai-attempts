@@ -131,11 +131,19 @@ function countpieces(board::Board, forcolor::PieceColor)
 end
 
 function minimax(player, board::Board, search_depth::Integer)
-    return minimax(player, board, search_depth, true, -Inf, Inf, missing)
+    if sidetomove(board) == WHITE
+        return minimax(player, board, search_depth, true, -Inf, Inf, missing)
+    else
+        return minimax(player, board, search_depth, false, -Inf, Inf, missing)
+    end
 end
 
 function minimax(player, board::Board, search_depth::Integer, last_best::Union{Missing, Move})
-    return minimax(player, board, search_depth, true, -Inf, Inf, last_best)
+    if sidetomove(board) == WHITE
+        return minimax(player, board, search_depth, true, -Inf, Inf, last_best)
+    else
+        return minimax(player, board, search_depth, false, -Inf, Inf, last_best)
+    end
 end
 
 function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, alpha::Float64, beta::Float64)
@@ -172,6 +180,7 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
         mlist[idx] = temp
     end
 
+
     for move in mlist
     # Threads.@threads for move in mlist
 
@@ -179,8 +188,13 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
         p_board = domove(board, move)
         if search_depth == 0 || isterminal(p_board)
             eval = eval_board(player, p_board)
+
         else
             old_move, eval = minimax(player, p_board, search_depth - 1, !maxplayer, alpha, beta)
+            # if search_depth == 4
+                # print(" - $move $eval - ")
+            # end
+
         end
     
 
@@ -214,6 +228,9 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
 
         end
     end
+
+    # if search_depth == 4
+    # println()
     return best_move, best_eval
 
 end

@@ -97,7 +97,6 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
 
         while time() - starttime < player.processtime
 
-            # println("depth $depth")
 
             # not using the generic because I don't know julia
             # https://discourse.julialang.org/t/break-function-on-time-limit/7376/7
@@ -111,6 +110,8 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
                 sleep(0.1)
                 # println("waiting... $(time() - starttime)")
                 if istaskdone(t)
+
+                    # println("depth $depth")
                     move, eval = fetch(t)
                     found_move = true
                     break
