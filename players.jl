@@ -68,8 +68,8 @@ function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Boar
     eval::Float64 = 0
 
     eval += countpieces(board, forcolor) * 10000
-    eval += ischeckmate(board) ? 10000 : 0
-    eval += isterminal(board) ? -1000 : 0
+    eval += ischeckmate(board) ? 1000000 : 0
+    eval += isterminal(board) ? -100000 : 0
     eval += basic_pstable(board, forcolor) 
     eval += movecount(board) * 100
 
@@ -100,12 +100,18 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
 
             # not using the generic because I don't know julia
             # https://discourse.julialang.org/t/break-function-on-time-limit/7376/7
-            t = @async minimax(player, board, depth)
+            if !found_move
+                t = @async minimax(player, board, depth)
+            else
+                t = @async minimax(player, board, depth, move)
+            end
 
             while time() - starttime < player.processtime
                 sleep(0.1)
                 # println("waiting... $(time() - starttime)")
                 if istaskdone(t)
+
+                    # println("depth $depth")
                     move, eval = fetch(t)
                     found_move = true
                     break
@@ -130,8 +136,6 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
         println(move)
         throw(err)
     end
-
-    # println("move eval: $eval")
 
     return board
     end

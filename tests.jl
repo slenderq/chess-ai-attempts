@@ -82,14 +82,13 @@ function rapid_engie_test(player, tests ,debug::Bool)
 
         if move == answer
             passed_tests += 1
-            if debug
-                print(" ✔")
-            end
+            print("✔")
         else
             push!(failed, [fen(board), answer, move])
+            
+            print("❌")
             if debug
                 print(" $move $answer ")
-                print("❌")
             end
         end
     end
@@ -116,13 +115,14 @@ function run()
     # @time rapid_engie_test(MiniMaxPlayer(400, 4)) # 14/111
 
     # @time rapid_engie_test(MiniMaxPlayer(400, 2)) # 13/111
-    # @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 7), rapid_engine_table, true) # 13/111
-    # @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 3), rapid_engine_table, true) # 13/111
-    @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 7), game_blunders, true) # 13/111
-    @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 6), game_blunders, true) # 13/111
-    @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 5), game_blunders, true) # 13/111
-    @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 4), game_blunders, true) # 13/111
-    @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 3), game_blunders, true) # 13/111
+    @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 7), rapid_engine_table, true) # 13/111
+    # time: 270
+    # @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 11), game_blunders, true) # 13/111
+    # @time rapid_engie_test(MiniMaxPlayer(400, 5), game_blunders, true) # 13/111
+    # @time rapid_engie_test(MiniMaxPlayer(400, 4), game_blunders, true) # 13/111
+    # @time rapid_engie_test(MiniMaxPlayer(400, 3), game_blunders, true) # 13/111
+    # @time rapid_engie_test(MiniMaxPlayer(400, 2), game_blunders, true) # 13/111
+    # @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 10), game_blunders, true) # 13/111
     # @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 14)) # 5/111
     # 1626.154327 seconds (7.09 G allocations: 361.913 GiB, 3.66% gc time, 0.08% compilation time
 
