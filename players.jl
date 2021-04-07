@@ -1,6 +1,17 @@
 using Chess
 using Chess.Book
 using Memoize
+
+struct trans_table_value
+    best_move::Move
+    best_eval::Float64
+    maxplayer::Bool
+    time::Int64
+    function trans_table(best_move::Move, best_eval::Float64, maxplayer::Bool, time::Int64)
+        new(best_move, best_eval, maxplayer, time_ns())
+    end
+end
+
 mutable struct RandomPlayer
     elo::Float32
     function RandomPlayer(elo)

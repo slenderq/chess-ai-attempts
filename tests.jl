@@ -6,6 +6,7 @@ include("tables.jl")
 
 using Test
 using Chess
+using Profile
 # testing that piece counting works 
 function test_piece_count()
     @test countpieces(fromfen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"), BLACK) == 0
@@ -115,8 +116,10 @@ function run()
     # @time rapid_engie_test(MiniMaxPlayer(400, 4)) # 14/111
 
     # @time rapid_engie_test(MiniMaxPlayer(400, 2)) # 13/111
-    @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 7), rapid_engine_table, true) # 13/111
-    # time: 270
+    @time @profile rapid_engie_test(MiniMaxPlayer(400, 2), rapid_engine_table, true) # 13/111
+    # time: 63 without optimization
+    # time: 
+    # @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 7), rapid_engine_table, true) # 13/111
     # @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 11), game_blunders, true) # 13/111
     # @time rapid_engie_test(MiniMaxPlayer(400, 5), game_blunders, true) # 13/111
     # @time rapid_engie_test(MiniMaxPlayer(400, 4), game_blunders, true) # 13/111
@@ -131,7 +134,8 @@ function run()
     test_min_max_fail()
     test_development()
     test_piece_count()
-    test_time()
+    # test_time()
 end
 run()
 println("Tests pass!")
+# Profile.print()

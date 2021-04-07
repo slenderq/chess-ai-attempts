@@ -4,6 +4,7 @@ using Memoize
 
 include("tables.jl")
 
+
 time_from_now(seconds) = round(Int, 10^9 * seconds + time_ns())
 
 function print_board(b::Board)
@@ -159,8 +160,9 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
         sleep(0.0000000000000000000000000000000001)
     end
 
-    pruning = true
-    # pruning = false
+    compressed_board = compress(board)
+
+
 
     # Random move
     # m = choice(mlist)
@@ -208,16 +210,13 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
             end
 
 
-            if pruning
-                if eval > alpha
-                    alpha = eval
-                end
-
-                if eval > beta
-                    return best_move, best_eval
-                end
+            if eval > alpha
+                alpha = eval
             end
 
+            if eval > beta
+                return best_move, best_eval
+            end
         else
             if  eval <  best_eval
                 best_eval = eval
@@ -225,14 +224,12 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
             end
 
 
-            if pruning
-                if eval < beta
-                    beta = eval
-                end
+            if eval < beta
+                beta = eval
+            end
 
-                if eval < alpha
-                    return best_move, best_eval
-                end
+            if eval < alpha
+                return best_move, best_eval
             end
         end
     end
