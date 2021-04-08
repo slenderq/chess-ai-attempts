@@ -55,7 +55,7 @@ tournament(games_in_match) = tournament(games_in_match, true)
 
 function tournament(games_in_match, board_printing::Bool)
 
-    allplayers = [TimerMiniMaxPlayer(400, 1, 3), BetterMiniMaxPlayer(400, 2)]
+    allplayers = [TimerMiniMaxPlayer(400, 1, 4), TimerMiniMaxPlayer(400, 1, 7)]
                     
     # [RandomPlayer(400), RandomPlayer(600), RandomPlayer(200), RandomPlayer(100)]
     

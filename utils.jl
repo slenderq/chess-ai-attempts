@@ -160,9 +160,6 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
         sleep(0.0000000000000000000000000000000001)
     end
 
-    compressed_board = compress(board)
-
-
 
     # Random move
     # m = choice(mlist)
