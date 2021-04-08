@@ -7,8 +7,10 @@ struct trans_table_value
     best_eval::Float64
     maxplayer::Bool
     time::Int64
-    function trans_table(best_move::Move, best_eval::Float64, maxplayer::Bool, time::Int64)
-        new(best_move, best_eval, maxplayer, time_ns())
+    depth::Int
+    max_size::Int
+    function trans_table_value(best_move::Move, best_eval::Float64, maxplayer::Bool, depth::Int)
+        new(best_move, best_eval, maxplayer, time_ns(), depth, 10000000000)
     end
 end
 
@@ -40,9 +42,10 @@ mutable struct TimerMiniMaxPlayer
     elo::Float32 
     startdepth::Integer
     processtime::Union{Integer,Float64}
+    trans_table::Dict
 
     function TimerMiniMaxPlayer(elo, startdepth::Integer, processtime::Union{Integer,Float64})
-        new(elo, startdepth, processtime)
+        new(elo, startdepth, processtime, Dict())
     end
 end
 

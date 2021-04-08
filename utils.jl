@@ -152,14 +152,43 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
 end
 
 function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, alpha::Float64, beta::Float64, last_best::Union{Missing, Move})
+
     # In case this needs to be interupped
-    # give the async function a chance to shine
-    # print(" $search_depth")
-    
+    # make sure that there is a change for another function to run.
     if rand(1:100) == 1 
         sleep(0.0000000000000000000000000000000001)
     end
 
+
+    # If we are using a player with a trans_table
+    if hasproperty(player, :trans_table)
+
+        # only compress the board if there 
+        
+        error = false
+        try
+            compressed_board = compress(board)
+        catch err
+            if err isa InexactError
+                println("can't compress $(fen(board))")
+            end
+        end
+
+        # Check we have a entry in the trans_table
+        if haskey(player.trans_table, compressed_board) && !error
+            # We have evaluated this position before!
+            past_run = player.trans_table[compressed_board]
+        
+            if past_run.depth >= search_depth
+                # only use positions that are deeper than our current depth
+                return past_run.best_move, past_run.best_eval
+            end
+
+        end
+        
+
+
+    end
 
     # Random move
     # m = choice(mlist)
@@ -231,8 +260,14 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
         end
     end
 
-    # if search_depth == 4
-    # println()
+    # Cache this run
+    if hasproperty(player, :trans_table)
+
+        compressed_board = compress(board)
+        player.trans_table[compressed_board] = trans_table_value(best_move, best_eval, maxplayer, search_depth)
+
+    end
+
     return best_move, best_eval
 
 end
