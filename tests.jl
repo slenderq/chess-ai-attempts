@@ -119,7 +119,7 @@ function run()
     # @time @profile rapid_engie_test(MiniMaxPlayer(400, 2), rapid_engine_table, true) # 13/111
     # time: 63 without optimization
     # time: 
-    @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 3), rapid_engine_table, false) # 13/111
+    @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 7), rapid_engine_table, false) # 11/111
     # @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 11), game_blunders, true) # 13/111
     # @time rapid_engie_test(MiniMaxPlayer(400, 5), game_blunders, true) # 13/111
     # @time rapid_engie_test(MiniMaxPlayer(400, 4), game_blunders, true) # 13/111

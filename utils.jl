@@ -173,11 +173,12 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
             # We have evaluated this position before!
             past_run = player.trans_table[compressed_board]
         
-            if past_run.depth >= search_depth
+            # TODO: only use this if needed
+            # if past_run.depth >= search_depth
                 # only use positions that are deeper than our current depth
-                # print("💰")
-                return past_run.best_move, past_run.best_eval
-            end
+            # print("💰")
+            return past_run.best_move, past_run.best_eval
+            # end
 
         end
         
