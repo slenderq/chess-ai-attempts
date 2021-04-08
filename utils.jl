@@ -159,28 +159,23 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
         sleep(0.0000000000000000000000000000000001)
     end
 
-
+    
     # If we are using a player with a trans_table
     if hasproperty(player, :trans_table)
 
         # only compress the board if there 
         
-        error = false
-        try
-            compressed_board = compress(board)
-        catch err
-            if err isa InexactError
-                println("can't compress $(fen(board))")
-            end
-        end
+        # compressed_board = compress(board)
+        compressed_board = board
 
         # Check we have a entry in the trans_table
-        if haskey(player.trans_table, compressed_board) && !error
+        if haskey(player.trans_table, board)
             # We have evaluated this position before!
             past_run = player.trans_table[compressed_board]
         
             if past_run.depth >= search_depth
                 # only use positions that are deeper than our current depth
+                # print("💰")
                 return past_run.best_move, past_run.best_eval
             end
 
@@ -263,7 +258,8 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
     # Cache this run
     if hasproperty(player, :trans_table)
 
-        compressed_board = compress(board)
+        # compressed_board = compress(board)
+        compressed_board = board
         player.trans_table[compressed_board] = trans_table_value(best_move, best_eval, maxplayer, search_depth)
 
     end
