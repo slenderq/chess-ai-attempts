@@ -48,7 +48,7 @@ mutable struct TimerMiniMaxPlayer
         new(elo, startdepth, processtime, Dict())
     end
 end
-Base.show(io::IO, player::TimerMiniMaxPlayer) = print("$(typeof(player)) elo: $(player.elo)")
+Base.show(io::IO, player::TimerMiniMaxPlayer) = print("$(typeof(player)) elo: $(player.elo) processtime: $processtime")
 
 mutable struct HumanPlayer
     elo::Float32 
