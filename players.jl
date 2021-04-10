@@ -141,7 +141,7 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
         if depth > player.max_depth_seen
             player.max_depth_seen = depth
         end
-        println("$move $(fen(board))")
+        # println("$move $(fen(board))")
         end
     end
     # end

@@ -175,25 +175,25 @@ end
 
 function minimax(player, board::Board, search_depth::Integer)
     if sidetomove(board) == WHITE
-        return minimax(player, board, search_depth, true, -Inf, Inf, missing)
+        return minimax(player, board, search_depth, true, -Inf, Inf, missing, 0)
     else
-        return minimax(player, board, search_depth, false, -Inf, Inf, missing)
+        return minimax(player, board, search_depth, false, -Inf, Inf, missing, 0)
     end
 end
 
 function minimax(player, board::Board, search_depth::Integer, last_best::Union{Missing, Move})
     if sidetomove(board) == WHITE
-        return minimax(player, board, search_depth, true, -Inf, Inf, last_best)
+        return minimax(player, board, search_depth, true, -Inf, Inf, last_best, 0)
     else
-        return minimax(player, board, search_depth, false, -Inf, Inf, last_best)
+        return minimax(player, board, search_depth, false, -Inf, Inf, last_best, 0)
     end
 end
 
-function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, alpha::Float64, beta::Float64)
-    return minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, alpha::Float64, beta::Float64, missing)
+function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, alpha::Float64, beta::Float64, ply::Int)
+    return minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, alpha::Float64, beta::Float64, missing, ply)
 end
 
-function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, alpha::Float64, beta::Float64, last_best::Union{Missing, Move})
+function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, alpha::Float64, beta::Float64, last_best::Union{Missing, Move}, ply::Int)
 
     # In case this needs to be interupped
     # make sure that there is a change for another function to run.
@@ -238,13 +238,15 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
         p_board = domove(board, move)
         if search_depth == 0 || isterminal(p_board)
             eval = eval_board(player, p_board)
+            # Delay Penalty
             if ischeckmate(p_board)
                 # bonus for quick checkmates
-                eval += 10000 / search_depth
+                eval = eval / (ply +1)
+                # eval +
             end
 
         else
-            old_move, eval = minimax(player, p_board, search_depth - 1, !maxplayer, alpha, beta)
+            old_move, eval = minimax(player, p_board, search_depth - 1, !maxplayer, alpha, beta, ply+1)
             # if search_depth == 4
                 # print(" - $move $eval - ")
             # end
