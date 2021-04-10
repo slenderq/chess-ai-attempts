@@ -130,6 +130,9 @@ function countpieces(board::Board, forcolor::PieceColor)
     return differential
 
 end
+function check_trans_entry(board::Board, player)
+
+end
 
 function minimax(player, board::Board, search_depth::Integer)
     if sidetomove(board) == WHITE
@@ -163,22 +166,21 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
     # If we are using a player with a trans_table
     if hasproperty(player, :trans_table)
 
+        # board, player
         # only compress the board if there 
         
         # compressed_board = compress(board)
-        compressed_board = board
-
+        compressed_board = fen(board)
         # Check we have a entry in the trans_table
         if haskey(player.trans_table, board)
             # We have evaluated this position before!
             past_run = player.trans_table[compressed_board]
         
             # TODO: only use this if needed
-            # if past_run.depth >= search_depth
-                # only use positions that are deeper than our current depth
-            # print("💰")
-            return past_run.best_move, past_run.best_eval
-            # end
+            if past_run.depth >= search_depth
+                print("💰")
+                return past_run.best_move, past_run.best_eval
+            end
 
         end
         
@@ -260,7 +262,7 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
     if hasproperty(player, :trans_table)
 
         # compressed_board = compress(board)
-        compressed_board = board
+        compressed_board = fen(board)
         player.trans_table[compressed_board] = trans_table_value(best_move, best_eval, maxplayer, search_depth)
 
     end
@@ -268,6 +270,7 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
     return best_move, best_eval
 
 end
+
 
 function is_endgame(board::Board) 
 

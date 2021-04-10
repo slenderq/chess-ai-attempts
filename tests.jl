@@ -7,6 +7,7 @@ include("tables.jl")
 using Test
 using Chess
 using Profile
+using PrettyPrint
 # testing that piece counting works 
 function test_piece_count()
     @test countpieces(fromfen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"), BLACK) == 0
@@ -42,6 +43,7 @@ function test_development()
 end
 
 function test_time()
+    # TODO: Fix this test!
     # https://discourse.julialang.org/t/break-function-on-time-limit/7376/10
     t = time()
     b = startboard()
@@ -104,7 +106,10 @@ function test_basic_pstable()
     
 end
 
-function test_broken_minimax()
+function write_transition_table(player)
+    f = open("trans_table.txt" ,"w")
+    # TODO: mayber do this in json?
+    write(f, pformat(player.trans_table))
 
 end
 
@@ -119,8 +124,11 @@ function run()
     # @time @profile rapid_engie_test(MiniMaxPlayer(400, 2), rapid_engine_table, true) # 13/111
     # time: 63 without optimization
     # time: 
-    @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 7), rapid_engine_table, false) # 11/111
-    # @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 11), game_blunders, true) # 13/111
+    # @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 7), rapid_engine_table, false) # 11/111
+    player = TimerMiniMaxPlayer(400, 1, 4)
+
+    @time rapid_engie_test(player, game_blunders, true) # 11/111
+    # 10 seconds
     # @time rapid_engie_test(MiniMaxPlayer(400, 5), game_blunders, true) # 13/111
     # @time rapid_engie_test(MiniMaxPlayer(400, 4), game_blunders, true) # 13/111
     # @time rapid_engie_test(MiniMaxPlayer(400, 3), game_blunders, true) # 13/111
@@ -130,6 +138,7 @@ function run()
     # 1626.154327 seconds (7.09 G allocations: 361.913 GiB, 3.66% gc time, 0.08% compilation time
 
     # rapid_engie_test(MiniMaxPlayer(400, 2))# 8/111
+    write_transition_table(player)
     test_basic_pstable()
     test_min_max_fail()
     test_development()
