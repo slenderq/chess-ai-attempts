@@ -5,6 +5,9 @@ using Chess
 # https://docs.julialang.org/en/v1/manual/types/#Composite-Types-1
 # https://juliadocs.github.io/Julia-Cheat-Sheet/
 # https://lichess.org/team/lichess-elite-database
+
+# https://chesstempo.com/pgn-viewer/
+# https://int8.io/chess-position-evaluation-with-convolutional-neural-networks-in-julia/
 using ArgParse
 
 include("utils.jl")
@@ -23,8 +26,11 @@ end
 function game_loop(white, black, printing::Bool, header_string)
 
     b = startboard()
+    g = Game(b)
 
-    while !isterminal(b)
+    while !isterminal(board(g))
+
+        b = board(g)
         if printing
             # run(`clear`)
             print_board(b)
@@ -39,9 +45,23 @@ function game_loop(white, black, printing::Bool, header_string)
         elseif sidetomove(b) == BLACK
             b = makemove(black, b)
         end
+
+        # save the move to the game
+        domove!(g, lastmove(b))
     end
+
+    write_game(g)
+
     return b
 
+
+end
+function write_game(g::Game)
+    pgn_string =  gametogpn(g)
+    f = open("games/game-$(time()).txt" ,"w")
+    # TODO: mayber do this in json?
+    write(f, pgn_string)
+    close(f)
 
 end
 
@@ -56,7 +76,7 @@ tournament(games_in_match) = tournament(games_in_match, true)
 
 function tournament(games_in_match, board_printing::Bool)
 
-    allplayers = [TimerMiniMaxPlayer(400, 1, 4), TimerMiniMaxPlayer(400, 1, 7)]
+    allplayers = [TimerMiniMaxPlayer(400, 1, 0.5), TimerMiniMaxPlayer(400, 1, 3)]
                     
     # [RandomPlayer(400), RandomPlayer(600), RandomPlayer(200), RandomPlayer(100)]
     

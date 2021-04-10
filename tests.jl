@@ -110,6 +110,7 @@ function write_transition_table(player)
     f = open("trans_table.txt" ,"w")
     # TODO: mayber do this in json?
     write(f, pformat(player.trans_table))
+    close(f)
 
 end
 
