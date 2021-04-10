@@ -29,7 +29,8 @@ function game_loop(white, black, printing::Bool, header_string)
             # run(`clear`)
             print_board(b)
             if fen(b) != START_FEN
-                println("last move: $(movetosan(lastmove(b)))")
+                # lastsan = movetosan(b, lastmove(b))
+                println("last move: $(lastmove(b))")
             end
             println(header_string)
         end
