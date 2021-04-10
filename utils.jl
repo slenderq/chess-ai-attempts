@@ -217,15 +217,17 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
 
     mlist = Array(moves(board))
 
-    mlist = sort(mlist, by=(x -> see(board,x)), rev=true)
+    # mlist = sort(mlist, by=(x -> see(board,x)), rev=true)
 
     # Use the best move first
     if !(last_best === missing)
         # Priotize the move that we last found
         idx = findfirst(m -> m == last_best, mlist)
-        temp = mlist[1]
-        mlist[1] = mlist[idx]
-        mlist[idx] = temp
+        if idx != nothing
+            temp = mlist[1]
+            mlist[1] = mlist[idx]
+            mlist[idx] = temp
+        end
     end
 
 
@@ -236,6 +238,10 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
         p_board = domove(board, move)
         if search_depth == 0 || isterminal(p_board)
             eval = eval_board(player, p_board)
+            if ischeckmate(p_board)
+                # bonus for quick checkmates
+                eval += 10000 / search_depth
+            end
 
         else
             old_move, eval = minimax(player, p_board, search_depth - 1, !maxplayer, alpha, beta)

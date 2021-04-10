@@ -85,8 +85,8 @@ function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Boar
     eval::Float64 = 0
 
     eval += countpieces(board, forcolor) * 10000
-    eval += ischeckmate(board) ? 1000000 : 0
-    eval += isterminal(board) ? -100000 : 0
+    eval += ischeckmate(board) ? 2^20 : 0
+    eval += isterminal(board) && !ischeckmate(board) ? -2^20 : 0
     eval += basic_pstable(board, forcolor) 
     eval += movecount(board) * 100
 
@@ -141,7 +141,7 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
         if depth > player.max_depth_seen
             player.max_depth_seen = depth
         end
-        # println("depth $depth")
+        println("$move $(fen(board))")
         end
     end
     # end

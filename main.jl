@@ -29,7 +29,7 @@ function game_loop(white, black, printing::Bool, header_string)
             # run(`clear`)
             print_board(b)
             if fen(b) != START_FEN
-                println("last move: $(lastmove(b))")
+                println("last move: $(movetosan(lastmove(b)))")
             end
             println(header_string)
         end
@@ -96,7 +96,8 @@ function tournament(games_in_match, board_printing::Bool)
                     black = match[1]
                 end
 
-                println("   Game: $white $black ")
+                print("Game: $white")
+                print("Game: $black")
                 b = game_loop(white, black, board_printing, "Game: $white $black")
 
                 draw = false
