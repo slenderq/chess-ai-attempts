@@ -43,12 +43,14 @@ mutable struct TimerMiniMaxPlayer
     startdepth::Integer
     processtime::Union{Integer,Float64}
     trans_table::Dict
+    max_depth_seen::Int
+
 
     function TimerMiniMaxPlayer(elo, startdepth::Integer, processtime::Union{Integer,Float64})
-        new(elo, startdepth, processtime, Dict())
+        new(elo, startdepth, processtime, Dict(), -1)
     end
 end
-Base.show(io::IO, player::TimerMiniMaxPlayer) = println("$(typeof(player)) elo: $(player.elo) processtime: $(player.processtime)")
+Base.show(io::IO, player::TimerMiniMaxPlayer) = println("$(typeof(player)) elo: $(player.elo) processtime: $(player.processtime) max_depth_seen $(player.max_depth_seen)")
 
 mutable struct HumanPlayer
     elo::Float32 
@@ -135,6 +137,10 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
             
             sleep(0.1)
         depth += 1
+
+        if depth > player.max_depth_seen
+            player.max_depth_seen = depth
+        end
         # println("depth $depth")
         end
     end

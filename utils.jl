@@ -130,7 +130,55 @@ function countpieces(board::Board, forcolor::PieceColor)
     return differential
 
 end
-function check_trans_entry(board::Board, player)
+function check_trans_entry(board::Board, player, search_depth::Int)
+    return check_trans_entry(board::Board, player, search_depth::Int, false)
+end
+function check_trans_entry(board::Board, player, search_depth::Int, debug::Bool)
+    # If we are using a player with a trans_table
+    if hasproperty(player, :trans_table)
+
+        # board, player
+        # only compress the board if there 
+        
+        # compressed_board = compress(board)
+        compressed_board = fen(board)
+        # Check we have a entry in the trans_table
+        if haskey(player.trans_table, compressed_board)
+            # We have evaluated this position before!
+            past_run = player.trans_table[compressed_board]
+        
+            # TODO: only use this if needed
+            if past_run.depth >= search_depth
+                if debug
+                    print("💰")
+                end
+
+                return past_run.best_move, past_run.best_eval
+            elseif debug
+                print("$(past_run.depth) < $(search_depth)")
+                
+            end
+
+        end
+        
+
+
+    end
+
+    return ()
+
+
+end
+
+function save_trans_entry(board::Board, player, best_move::Move, best_eval::Float64, maxplayer::Bool, search_depth::Int)
+    # Cache this run
+    if hasproperty(player, :trans_table)
+
+        # compressed_board = compress(board)
+        compressed_board = fen(board)
+        player.trans_table[compressed_board] = trans_table_value(best_move, best_eval, maxplayer, search_depth)
+
+    end
 
 end
 
@@ -162,33 +210,12 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
         sleep(0.0000000000000000000000000000000001)
     end
 
-    
-    # If we are using a player with a trans_table
-    if hasproperty(player, :trans_table)
-
-        # board, player
-        # only compress the board if there 
-        
-        # compressed_board = compress(board)
-        compressed_board = fen(board)
-        # Check we have a entry in the trans_table
-        if haskey(player.trans_table, board)
-            # We have evaluated this position before!
-            past_run = player.trans_table[compressed_board]
-        
-            # TODO: only use this if needed
-            if past_run.depth >= search_depth
-                print("💰")
-                return past_run.best_move, past_run.best_eval
-            end
-
-        end
-        
-
-
+    table_rst = check_trans_entry(board, player, search_depth)
+    if table_rst != ()
+        # if there is actually a result
+        return table_rst
     end
-
-    # Random move
+       # Random move
     # m = choice(mlist)
     # Arbitry move
     best_move::Move = Move(Square(FILE_D, RANK_5), Square(FILE_D, RANK_5))
@@ -258,19 +285,11 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
         end
     end
 
-    # Cache this run
-    if hasproperty(player, :trans_table)
-
-        # compressed_board = compress(board)
-        compressed_board = fen(board)
-        player.trans_table[compressed_board] = trans_table_value(best_move, best_eval, maxplayer, search_depth)
-
-    end
-
+    save_trans_entry(board, player, best_move, best_eval, maxplayer, search_depth)
+    
     return best_move, best_eval
 
 end
-
 
 function is_endgame(board::Board) 
 
