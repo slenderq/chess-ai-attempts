@@ -165,7 +165,6 @@ end
 function save_trans_entry(board::Board, player, best_move::Move, best_eval::Float64, maxplayer::Bool, search_depth::Int)
     # Cache this run
     if hasproperty(player, :trans_table)
-
         if search_depth >= 0
             # compressed_board = compress(board)
             compressed_board = fen(board)
@@ -207,12 +206,10 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
         # if there is actually a result
         return table_rst
     end
-       # Random move
-    # m = choice(mlist)
+
     # Arbitry move
     best_move::Move = Move(Square(FILE_D, RANK_5), Square(FILE_D, RANK_5))
     best_eval::Float64 = Inf
-
 
     if maxplayer
         best_eval = best_eval * -1
@@ -220,6 +217,9 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
 
     mlist = Array(moves(board))
 
+    mlist = sort(mlist, by=(x -> see(board,x)), rev=true)
+
+    # Use the best move first
     if !(last_best === missing)
         # Priotize the move that we last found
         idx = findfirst(m -> m == last_best, mlist)
