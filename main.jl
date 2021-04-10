@@ -1,6 +1,7 @@
 # https://juliabyexample.helpmanual.io/#Packages-and-Including-of-Files
 # https://riptutorial.com/julia-lang
 using Chess
+using Chess.PGN
 # https://romstad.github.io/Chess.jl/dev/
 # https://docs.julialang.org/en/v1/manual/types/#Composite-Types-1
 # https://juliadocs.github.io/Julia-Cheat-Sheet/
@@ -28,6 +29,10 @@ function game_loop(white, black, printing::Bool, header_string)
     b = startboard()
     g = Game(b)
 
+    # setheadervalue!(g, "White", )
+    # g.GameHeaders.white = Base.show(white)
+    # g.GameHeaders.black = Base.show(black)
+
     while !isterminal(board(g))
 
         b = board(g)
@@ -48,6 +53,7 @@ function game_loop(white, black, printing::Bool, header_string)
 
         # save the move to the game
         domove!(g, lastmove(b))
+
     end
 
     write_game(g)
@@ -57,8 +63,8 @@ function game_loop(white, black, printing::Bool, header_string)
 
 end
 function write_game(g::Game)
-    pgn_string =  gametogpn(g)
-    f = open("games/game-$(time()).txt" ,"w")
+    pgn_string =  gametopgn(g)
+    f = open("games/game-$(time()).pgn" ,"w")
     # TODO: mayber do this in json?
     write(f, pgn_string)
     close(f)

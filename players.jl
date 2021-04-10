@@ -147,7 +147,7 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
     # end
     if !found_move
         mlist = moves(board)
-        m = choice(mlist)
+        move = choice(mlist)
     end
 
     try
