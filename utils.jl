@@ -75,7 +75,6 @@ function development_rating(board::Board, forcolor::PieceColor)
 
     rating = 0
 
-
     for square in pieces(board, forcolor)
         
         if forcolor == WHITE
@@ -90,7 +89,6 @@ function development_rating(board::Board, forcolor::PieceColor)
         end
     
     end
-    # file(square)
 
     return rating
 end
@@ -126,7 +124,6 @@ function countpieces(board::Board, forcolor::PieceColor)
         differential = white - black
     end
 
-
     return differential
 
 end
@@ -139,7 +136,6 @@ function check_trans_entry(board::Board, player, search_depth::Int, debug::Bool)
 
         # board, player
         # only compress the board if there 
-        
         # compressed_board = compress(board)
         compressed_board = fen(board)
         # Check we have a entry in the trans_table
@@ -158,11 +154,7 @@ function check_trans_entry(board::Board, player, search_depth::Int, debug::Bool)
                 print("$(past_run.depth) < $(search_depth)")
                 
             end
-
         end
-        
-
-
     end
 
     return ()
@@ -174,12 +166,12 @@ function save_trans_entry(board::Board, player, best_move::Move, best_eval::Floa
     # Cache this run
     if hasproperty(player, :trans_table)
 
-        # compressed_board = compress(board)
-        compressed_board = fen(board)
-        player.trans_table[compressed_board] = trans_table_value(best_move, best_eval, maxplayer, search_depth)
-
+        if search_depth >= 0
+            # compressed_board = compress(board)
+            compressed_board = fen(board)
+            player.trans_table[compressed_board] = trans_table_value(best_move, best_eval, maxplayer, search_depth)
+        end
     end
-
 end
 
 function minimax(player, board::Board, search_depth::Integer)
