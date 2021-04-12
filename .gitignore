@@ -130,3 +130,5 @@ dmypy.json
 
 # Chess database files
 *.obk
+
+*.txt
