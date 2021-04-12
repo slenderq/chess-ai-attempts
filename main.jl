@@ -6,9 +6,11 @@ using Chess.PGN
 # https://docs.julialang.org/en/v1/manual/types/#Composite-Types-1
 # https://juliadocs.github.io/Julia-Cheat-Sheet/
 # https://lichess.org/team/lichess-elite-database
-
-# https://chesstempo.com/pgn-viewer/
 # https://int8.io/chess-position-evaluation-with-convolutional-neural-networks-in-julia/
+
+# Tools
+# https://lichess.org/editor
+# https://chesstempo.com/pgn-viewer/
 using ArgParse
 
 include("utils.jl")

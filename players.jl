@@ -77,6 +77,8 @@ end
 
 # @memoize function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Board)
 function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Board)
+    # NOTE: from WHITE's perspective
+
 
     # https://romstad.github.io/Chess.jl/stable/api/#Chess.movecount
     # Add movecount
@@ -88,7 +90,13 @@ function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Boar
     eval += ischeckmate(board) ? 2^20 : 0
     eval += isterminal(board) && !ischeckmate(board) ? -2^20 : 0
     eval += basic_pstable(board, forcolor) 
-    eval += movecount(board) * 100
+    
+    # making sure this is always from whites perspective
+    if forcolor == BLACK
+        eval -= movecount(board) * 100
+    else
+        eval += movecount(board) * 100
+    end
 
     # eval += rand(-1:1)
     

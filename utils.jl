@@ -329,16 +329,18 @@ function is_endgame(board::Board)
 
 end
 
-function basic_pstable(b::Board, forcolor::PieceColor)
+function basic_pstable(board::Board, forcolor::PieceColor)
     # https://www.chessprogramming.org/PeSTO%27s_Evaluation_Function
 
     
-    if forcolor == BLACK
-        board = flip(b)
-    else
-        board = b
-    end
+    # Eval for white
+    # if forcolor == BLACK
+        # board = flip(b)
+    # else
+        # board = b
+    # end
 
+    
     table = []
     table_eval::Integer = 0
     for square in pieces(board, forcolor)
