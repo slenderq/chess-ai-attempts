@@ -11,8 +11,10 @@ using PrettyPrint
 # testing that piece counting works 
 function test_piece_count()
     @test countpieces(fromfen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"), BLACK) == 0
-    @test countpieces(fromfen("rnbqkbnr/pppppppp/8/8/8/8/PPPP1PPP/RNBQKBNR"), BLACK) == 1
-    @test countpieces(fromfen("rnb1kbnr/pppppppp/8/8/8/8/PPPP1PPP/RNBQKBNR"), BLACK) == -8
+    @test countpieces(fromfen("rnbqkbnr/pppppppp/8/8/8/8/PPPP1PPP/RNBQKBNR"), BLACK) == -1
+    @test countpieces(fromfen("rnb1kbnr/pppppppp/8/8/8/8/PPPP1PPP/RNBQKBNR"), BLACK) == 8
+    @test countpieces(fromfen("rnb1k1nr/pp1ppp1p/2p3p1/8/3PPB2/2NB1N2/PPP2PPP/R2QK2R b KQkq -"), BLACK) == 12 
+
 end
 
 function test_min_max()
@@ -117,15 +119,7 @@ end
 function run()
     # test_min_max()
 
-    # @time rapid_engie_test(BetterMiniMaxPlayer(400, 2)) 1/111
-    # @time rapid_engie_test(BetterMiniMaxPlayer(400, 3)) 9/111
-    # @time rapid_engie_test(MiniMaxPlayer(400, 4)) # 14/111
-
-    # @time rapid_engie_test(MiniMaxPlayer(400, 2)) # 13/111
-    # @time @profile rapid_engie_test(MiniMaxPlayer(400, 2), rapid_engine_table, true) # 13/111
-    # time: 63 without optimization
-    # time: 
-    @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 7), rapid_engine_table, false) # 11/111
+    # @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 7), rapid_engine_table, false) # 11/111
     player = TimerMiniMaxPlayer(400, 1, 3)
     # player = TimerMiniMaxPlayer(400, 1, 0.1)
 

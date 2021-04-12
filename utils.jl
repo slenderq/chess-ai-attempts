@@ -118,12 +118,14 @@ function countpieces(board::Board, forcolor::PieceColor)
     black += count(i -> (i == 'r'), board_string) * 5
     black += count(i -> (i == 'q'), board_string) * 9
 
-    if forcolor == BLACK
-        differential = black - white
-    else  # chess.WHITE
-        differential = white - black
-    end
+    # if forcolor == BLACK
+        # differential = black - white
+    # else  # chess.WHITE
+        # differential = white - black
+    # end
 
+    # always from whites perspective
+    differential = white - black
     return differential
 
 end
