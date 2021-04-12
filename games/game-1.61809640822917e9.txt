@@ -1,0 +1,9 @@
+[Event "?"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "?"]
+[Black "?"]
+[Result "*"]
+
+1. d3 f5 2. e4 fxe4 3. dxe4 e6 4. Qd4 Ne7 5. Bg5 a6 6. Nc3 b6 7. b3 Nd5 8. Bxd8 Nxc3 9. Bxc7 Nxa2 10. Rxa2 Nc6 11. Qxb6 Ne7 12. Bd6 e5 13. c3 h6 14. c4 Rg8 15. f4 exf4 16. b4 f3 17. gxf3 h5 18. b5 h4 19. bxa6 Bxa6 20. Nh3 Nc8 21. Qb4 Nxd6 22. Qb3 Nxc4 23. Bxc4 Bxc4 24. Rxa8+ Kf7 25. Qxc4+ d5 26. Qxd5+ Ke7 27. Ra7+ Ke8 28. Qa8# *
