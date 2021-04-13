@@ -76,7 +76,7 @@ function rapid_engie_test(player, tests ,debug::Bool)
     passed_tests::Integer = 0
     failed = []
 
-    for test in tests
+    for (index, test) in enumerate(tests)
         board = fromfen(test[1])
         answer = movefromsan(board, test[2])
 
@@ -93,7 +93,7 @@ function rapid_engie_test(player, tests ,debug::Bool)
             
             print("❌")
             if debug
-                print(" $move $answer ")
+                println("$index $move $answer ")
             end
         end
     end
