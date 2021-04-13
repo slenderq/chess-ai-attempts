@@ -177,8 +177,8 @@ eg_king_table = [
 game_blunders = [
     ["r1bqkb1r/ppppppp1/8/4n2p/2B1P1n1/3P1N1P/PPP1QPP1/RNB1K2R b KQkq - 0 6" , "Nf3"],
     ["rnb1k1nr/ppqppp1p/2p3pB/8/3PP3/2NB1N2/PPP2PPP/R2QK2R b KQkq -" , "Nxh6"],
-    ["8/3P4/8/8/4Q3/4P3/R4K2/3k4 w - - 2 2", "Qb1" ],
-    ["r1bqkbnr/pp2pppp/2n5/2pp4/4P3/1PNP4/P1P2PPP/R1BQKBNR b KQkq -", "Be6"],
+    ["8/3P4/8/8/4Q3/4P3/R4K2/3k4 w - - 2 2", "Qb1 Qh1" ],
+    ["r1bqkbnr/pp2pppp/2n5/2pp4/4P3/1PNP4/P1P2PPP/R1BQKBNR b KQkq -", "Be6 d4"],
     ["3k4/3p4/bN1Q4/1p5p/6p1/3B2P1/1PP2K1P/8 b - - 0 1", "Bc8"],
     ["8/8/1Q6/P3K3/8/k7/8/8 w - - 0 1", "Kd4"],
     ]

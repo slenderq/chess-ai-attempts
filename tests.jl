@@ -78,22 +78,23 @@ function rapid_engie_test(player, tests ,debug::Bool)
 
     for (index, test) in enumerate(tests)
         board = fromfen(test[1])
-        answer = movefromsan(board, test[2])
-
-        
-
+        answers = test[2]
+        raw_answers = split(test[2], " ")
+        answers = [movefromsan(board, String(x)) for x in raw_answers]
+        # alternate_answers = 
+        # answer = movefromsan(board, test[2])
         new_b = makemove(player, board)
         move = lastmove(new_b)
 
-        if move == answer
+        if move in answers
             passed_tests += 1
             print("✔")
         else
-            push!(failed, [fen(board), answer, move])
+            push!(failed, [fen(board), answers, move])
             
             print("❌")
             if debug
-                println("$index $move $answer ")
+                println("$index $move $answers ")
             end
         end
     end
@@ -104,7 +105,7 @@ end
 function test_basic_pstable()
     # Non-endgame
     @test basic_pstable(fromfen("2bqk3/8/8/2n2r1p/8/R2P4/5N2/2BQK3 w - - 0 1"), WHITE) == 62
-    @test basic_pstable(fromfen("2bqk3/8/8/2n2r1p/8/R2P4/5N2/2BQK3 w - - 0 1"), BLACK) == -25 
+    @test basic_pstable(fromfen("2bqk3/8/8/2n2r1p/8/R2P4/5N2/2BQK3 w - - 0 1"), BLACK) == 18 
     
 end
 
@@ -124,7 +125,7 @@ function run()
     # test_min_max()
     test_double_pawns()
 
-    @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 14), rapid_engine_table, false) # 11/111
+    # @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 14), rapid_engine_table, false) # 11/111
     player = TimerMiniMaxPlayer(400, 1, 7)
     # player = TimerMiniMaxPlayer(400, 1, 0.1)
 
