@@ -87,15 +87,29 @@ function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Boar
     eval::Float64 = 0
 
     eval += countpieces(board, forcolor) * 10000
+    if ischeckmate(board)
+        if forcolor == BLACK
+            # white is checkmated
+            eval -= 2^20
+        else
+            eval += 2^20
+        end
+    end
     eval += ischeckmate(board) ? 2^20 : 0
-    eval += isterminal(board) && !ischeckmate(board) ? -2^20 : 0
+
+    if forcolor == BLACK
+        eval += isterminal(board) && !ischeckmate(board) ? -2^20 : 0
+    else
+        eval += isterminal(board) && !ischeckmate(board) ? 2^20 : 0
+    end
+
     eval += basic_pstable(board, forcolor) 
     
     # making sure this is always from whites perspective
     if forcolor == BLACK
-        eval -= movecount(board) * 100
-    else
         eval += movecount(board) * 100
+    else
+        eval -= movecount(board) * 100
     end
 
     # eval += rand(-1:1)
