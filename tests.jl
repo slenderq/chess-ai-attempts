@@ -120,7 +120,7 @@ function run()
     # test_min_max()
 
     # @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 7), rapid_engine_table, false) # 11/111
-    player = TimerMiniMaxPlayer(400, 1, 3)
+    player = TimerMiniMaxPlayer(400, 1, 14)
     # player = TimerMiniMaxPlayer(400, 1, 0.1)
 
     @time rapid_engie_test(player, game_blunders, true) # 11/111
