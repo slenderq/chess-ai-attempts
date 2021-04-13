@@ -103,7 +103,8 @@ function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Boar
         eval += isterminal(board) && !ischeckmate(board) ? 2^20 : 0
     end
 
-    eval += basic_pstable(board, forcolor) 
+    eval += basic_pstable(board, WHITE) 
+    eval -= basic_pstable(board, BLACK) 
     
     # making sure this is always from whites perspective
     if forcolor == BLACK
@@ -112,7 +113,10 @@ function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Boar
         eval -= movecount(board) * 100
     end
 
-    # eval += rand(-1:1)
+    # punish for white double pawns
+    eval -= double_pawns(board, WHITE) * 5000
+    # benefit for doubling the other players pawns
+    eval += double_pawns(board, BLACK) * 5000
     
     return eval
 end

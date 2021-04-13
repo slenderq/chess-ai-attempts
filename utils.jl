@@ -329,17 +329,15 @@ function is_endgame(board::Board)
 
 end
 
-function basic_pstable(board::Board, forcolor::PieceColor)
+function basic_pstable(b::Board, forcolor::PieceColor)
     # https://www.chessprogramming.org/PeSTO%27s_Evaluation_Function
 
     
-    # Eval for white
-    # if forcolor == BLACK
-        # board = flip(b)
-    # else
-        # board = b
-    # end
-
+    if forcolor == BLACK
+        board = flip(b)
+    else
+        board = b
+    end
     
     table = []
     table_eval::Integer = 0
@@ -348,7 +346,6 @@ function basic_pstable(board::Board, forcolor::PieceColor)
         file_item = file(square)
 
         piece_type = ptype(pieceon(board, square))
-
         table = nothing
         if is_endgame(board)
             table = piece_type == PAWN ? eg_pawn_table : table
@@ -366,12 +363,32 @@ function basic_pstable(board::Board, forcolor::PieceColor)
             table = piece_type == KING ? mg_king_table : table
         end
 
-
         table_eval = table[ranktonum(rank_item), filetonum(file_item)]
-        # println(table_eval)
-        
     end
     return table_eval
 end
 
+function double_pawns(board::Board, forcolor::PieceColor)
+    # https://romstad.github.io/Chess.jl/dev/api/#Chess.pieceon
+
+    total_pawns = 0
+    total_double = 0
+    files = [SS_FILE_A, SS_FILE_B, SS_FILE_C, SS_FILE_D, SS_FILE_E, SS_FILE_F, SS_FILE_H]
+    for file in files
+        # -1 because its fine to have a single pawn
+        double_pawns = 0 
+        for square in file
+            piece = pieceon(board, square)
+            if  ptype(piece) == PAWN && pcolor(piece) == forcolor
+                total_pawns += 1
+                double_pawns += 1
+            end
+        end
+        if double_pawns > 1
+            total_double += (double_pawns - 1)
+        end
+    end
+
+    return total_double
+end
     

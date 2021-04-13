@@ -115,12 +115,17 @@ function write_transition_table(player)
     close(f)
 
 end
+function test_double_pawns()
+    @test double_pawns(fromfen("r1bqkb1r/ppppppp1/8/7p/2B1P1n1/3P1P1P/PPP1QP2/RNB1K2R b KQkq - 0 1"), WHITE) == 1
+    @test double_pawns(fromfen("r1bqkb1r/ppppppp1/8/3P3p/2BP2n1/P2P1P1P/P3QP2/RNB1K2R b KQkq - 0 1"), WHITE) == 4
+end
 
 function run()
     # test_min_max()
+    test_double_pawns()
 
-    # @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 7), rapid_engine_table, false) # 11/111
-    player = TimerMiniMaxPlayer(400, 1, 14)
+    @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 14), rapid_engine_table, false) # 11/111
+    player = TimerMiniMaxPlayer(400, 1, 7)
     # player = TimerMiniMaxPlayer(400, 1, 0.1)
 
     @time rapid_engie_test(player, game_blunders, true) # 11/111
