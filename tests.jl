@@ -78,22 +78,23 @@ function rapid_engie_test(player, tests ,debug::Bool)
 
     for (index, test) in enumerate(tests)
         board = fromfen(test[1])
-        answer = movefromsan(board, test[2])
-
-        
-
+        answers = test[2]
+        raw_answers = split(test[2], " ")
+        answers = [movefromsan(board, String(x)) for x in raw_answers]
+        # alternate_answers = 
+        # answer = movefromsan(board, test[2])
         new_b = makemove(player, board)
         move = lastmove(new_b)
 
-        if move == answer
+        if move in answers
             passed_tests += 1
             print("✔")
         else
-            push!(failed, [fen(board), answer, move])
+            push!(failed, [fen(board), answers, move])
             
             print("❌")
             if debug
-                println("$index $move $answer ")
+                println("$index $move $answers ")
             end
         end
     end
@@ -104,7 +105,7 @@ end
 function test_basic_pstable()
     # Non-endgame
     @test basic_pstable(fromfen("2bqk3/8/8/2n2r1p/8/R2P4/5N2/2BQK3 w - - 0 1"), WHITE) == 62
-    @test basic_pstable(fromfen("2bqk3/8/8/2n2r1p/8/R2P4/5N2/2BQK3 w - - 0 1"), BLACK) == -25 
+    @test basic_pstable(fromfen("2bqk3/8/8/2n2r1p/8/R2P4/5N2/2BQK3 w - - 0 1"), BLACK) == 18 
     
 end
 
@@ -115,12 +116,17 @@ function write_transition_table(player)
     close(f)
 
 end
+function test_double_pawns()
+    @test double_pawns(fromfen("r1bqkb1r/ppppppp1/8/7p/2B1P1n1/3P1P1P/PPP1QP2/RNB1K2R b KQkq - 0 1"), WHITE) == 1
+    @test double_pawns(fromfen("r1bqkb1r/ppppppp1/8/3P3p/2BP2n1/P2P1P1P/P3QP2/RNB1K2R b KQkq - 0 1"), WHITE) == 4
+end
 
 function run()
     # test_min_max()
+    test_double_pawns()
 
-    # @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 7), rapid_engine_table, false) # 11/111
-    player = TimerMiniMaxPlayer(400, 1, 3)
+    # @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 14), rapid_engine_table, false) # 11/111
+    player = TimerMiniMaxPlayer(400, 1, 7)
     # player = TimerMiniMaxPlayer(400, 1, 0.1)
 
     @time rapid_engie_test(player, game_blunders, true) # 11/111
