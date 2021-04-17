@@ -225,7 +225,11 @@ function makemove(player::HumanPlayer, board::Board)
             move = readline()
             board = domove(board, move)
             error = false
-        catch 
+        catch e
+            if isa(e, InterruptException)
+                throw(e)
+            end
+
             print("❌ ")
         end
     end

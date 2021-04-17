@@ -1,16 +1,5 @@
-# https://juliabyexample.helpmanual.io/#Packages-and-Including-of-Files
-# https://riptutorial.com/julia-lang
 using Chess
 using Chess.PGN
-# https://romstad.github.io/Chess.jl/dev/
-# https://docs.julialang.org/en/v1/manual/types/#Composite-Types-1
-# https://juliadocs.github.io/Julia-Cheat-Sheet/
-# https://lichess.org/team/lichess-elite-database
-# https://int8.io/chess-position-evaluation-with-convolutional-neural-networks-in-julia/
-
-# Tools
-# https://lichess.org/editor
-# https://chesstempo.com/pgn-viewer/
 using ArgParse
 
 include("utils.jl")
@@ -18,7 +7,6 @@ include("players.jl")
 
 function gameover(b::Board)
     return isstalemate(b) || ischeckmate(b)
-
 end
 
 
@@ -27,43 +15,41 @@ function game_loop(white, black, printing::Bool)
 end
 
 function game_loop(white, black, printing::Bool, header_string)
-
     b = startboard()
     g = Game(b)
 
+    # This makes sure the interupt works
+    ccall(:jl_exit_on_sigint, Nothing, (Cint,), 0)
+    # TODO: fill out the game headers
     # setheadervalue!(g, "White", )
     # g.GameHeaders.white = Base.show(white)
     # g.GameHeaders.black = Base.show(black)
 
-    while !isterminal(board(g))
-
-        b = board(g)
-        if printing
-            # run(`clear`)
-            print_board(b)
-            if fen(b) != START_FEN
-                # lastsan = movetosan(b, lastmove(b))
-                println("last move: $(lastmove(b))")
+    try
+        while !isterminal(board(g))
+            b = board(g)
+            if printing
+                print_board(b)
+                if fen(b) != START_FEN
+                    println("last move: $(lastmove(b))")
+                end
+                println(header_string)
             end
-            println(header_string)
+            if sidetomove(b) == WHITE
+                b = makemove(white, b)
+            elseif sidetomove(b) == BLACK
+                b = makemove(black, b)
+            end
+            # save the move to the game
+            domove!(g, lastmove(b))
         end
-        if sidetomove(b) == WHITE
-            b = makemove(white, b)
-        elseif sidetomove(b) == BLACK
-            b = makemove(black, b)
-        end
-
-        # save the move to the game
-        domove!(g, lastmove(b))
-
+    catch ex
+        write_game(g)
+        rethrow(ex)
     end
-
-    write_game(g)
-
     return b
-
-
 end
+
 function write_game(g::Game)
     pgn_string =  gametopgn(g)
     f = open("games/game-$(time()).pgn" ,"w")
