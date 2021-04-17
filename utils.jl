@@ -1,9 +1,7 @@
-
 using Chess
 using Memoize
 
 include("tables.jl")
-
 
 time_from_now(seconds) = round(Int, 10^9 * seconds + time_ns())
 
@@ -37,9 +35,7 @@ function print_board(b::Board)
     i = 8
     for row in board_list[2:length(board_list)]
         new_row = string(i, " ", row, " ", i)
-
         push!(new_board_list, new_row)
-
         i -= 1
     end
 
@@ -53,13 +49,9 @@ end
 function choice(iterable)
 
     n = length(iterable)
-
     idx = rand(1:n)
-
     m = iterable[idx]
-
     return m
-
 end
 
 function flipcolor(p::PieceColor)
@@ -72,11 +64,8 @@ end
 
 function development_rating(board::Board, forcolor::PieceColor)
 
-
     rating = 0
-
     for square in pieces(board, forcolor)
-        
         if forcolor == WHITE
             if (rank(square) != RANK_1 && rank(square) != RANK_2) && pieceon(board, square) != KING
                 rating = rating + 1
@@ -85,9 +74,7 @@ function development_rating(board::Board, forcolor::PieceColor)
             if (rank(square) != RANK_7 && rank(square) != RANK_8) && pieceon(board, square) != KING
                 rating = rating + 1
             end
-
         end
-    
     end
 
     return rating
@@ -118,24 +105,18 @@ function countpieces(board::Board, forcolor::PieceColor)
     black += count(i -> (i == 'r'), board_string) * 5
     black += count(i -> (i == 'q'), board_string) * 9
 
-    # if forcolor == BLACK
-        # differential = black - white
-    # else  # chess.WHITE
-        # differential = white - black
-    # end
-
     # always from whites perspective
     differential = white - black
     return differential
-
 end
+
 function check_trans_entry(board::Board, player, search_depth::Int)
     return check_trans_entry(board::Board, player, search_depth::Int, false)
 end
+
 function check_trans_entry(board::Board, player, search_depth::Int, debug::Bool)
     # If we are using a player with a trans_table
     if hasproperty(player, :trans_table)
-
         # board, player
         # only compress the board if there 
         # compressed_board = compress(board)

@@ -76,7 +76,6 @@ function tournament(games_in_match, board_printing::Bool)
     allplayers = [TimerMiniMaxPlayer(400, 1, 0.5), TimerMiniMaxPlayer(400, 1, 3)]
                     
     # [RandomPlayer(400), RandomPlayer(600), RandomPlayer(200), RandomPlayer(100)]
-    
 
     if length(allplayers) % 2 == 1
         throw(InvalidStateException("must have even players"))
@@ -191,9 +190,7 @@ function tournament(games_in_match, board_printing::Bool)
     end
 end
 
-
 if abspath(PROGRAM_FILE) == @__FILE__
-
     s = ArgParseSettings()
     @add_arg_table! s begin
         "--tournament"
