@@ -9,7 +9,6 @@ function gameover(b::Board)
     return isstalemate(b) || ischeckmate(b)
 end
 
-
 function game_loop(white, black, printing::Bool)
     return  game_loop(white, black, printing::Bool, "")
 end
@@ -62,8 +61,12 @@ end
 function basic_game()
     white = HumanPlayer(400)
     black = TimerMiniMaxPlayer(400, 1, 14)
-
-    game_loop(white, black, true)
+    # Random color
+    if choice([true, false])
+        game_loop(white, black, true)
+    else
+        game_loop(black, white, true)
+    end
 end
 
 tournament(games_in_match) = tournament(games_in_match, true)
@@ -89,11 +92,6 @@ function tournament(games_in_match, board_printing::Bool)
             push!(matches, [current_braket[i], current_braket[i + 1]])
             i += 2
         end
-        # for i in 1:(length(current_braket) - 1)
-
-            # if i % 2 == 0
-            # end
-        # end
 
         next_braket = []
         println("Matches $matches")
