@@ -1,9 +1,65 @@
 using Chess
 using Memoize
+using Crayons
 
 include("tables.jl")
 
 time_from_now(seconds) = round(Int, 10^9 * seconds + time_ns())
+function crayon_print(b::Board)
+
+    # https://romstad.github.io/Chess.jl/dev/api/#Chess.pieceon
+
+    # files = [SS_FILE_A, SS_FILE_B, SS_FILE_C, SS_FILE_D, SS_FILE_E, SS_FILE_F, SS_FILE_H]
+    ranks = [SS_RANK_8, SS_RANK_7, SS_RANK_6, SS_RANK_5, SS_RANK_4, SS_RANK_3, SS_RANK_2, SS_RANK_1]
+    sq_color = BLACK
+    black_color = (100, 100, 100)
+    white_color = (190, 190, 190)
+    p_color = :red
+    for rank in ranks
+        for square in rank
+
+            piece = pieceon(b, square)
+
+            sym = " "
+
+            if  ptype(piece) == PAWN
+                sym = "♟"
+            elseif ptype(piece) == KNIGHT
+                sym = "♞"
+            elseif ptype(piece) == BISHOP
+                sym = "♝"
+            elseif ptype(piece) == ROOK
+                sym = "♜"
+            elseif ptype(piece) == QUEEN
+                sym = "♛"
+            elseif ptype(piece) == KING
+                sym = "♚"
+            end
+            if pcolor(piece) == BLACK
+                p_color = :black
+            else
+                p_color = :white
+            end
+
+
+            if sq_color == BLACK
+                print(Crayon(foreground = p_color, background = black_color),"$sym ")
+            else
+                print(Crayon(foreground = p_color, background = white_color),"$sym ")
+            end
+
+            sq_color = coloropp(sq_color)
+
+
+
+        end
+        print(Crayon(reset = true), "\n")
+        sq_color = coloropp(sq_color)
+    end
+
+    print(Crayon(reset = true), "\n")
+
+end
 
 function print_board(b::Board)
     board_string = string(b)
@@ -44,6 +100,7 @@ function print_board(b::Board)
     
     println(board_string)
     println(fen_string)
+    crayon_print(b)
 end
 
 function choice(iterable)
