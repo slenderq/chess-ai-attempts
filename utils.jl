@@ -61,7 +61,7 @@ function crayon_print(b::Board)
 
         end
         print(Crayon(reset = true), "")
-        print(" $r_idx")
+        print(" $(9 - r_idx)")
         println()
         sq_color = coloropp(sq_color)
     end
