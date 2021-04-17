@@ -9,14 +9,21 @@ function crayon_print(b::Board)
 
     # https://romstad.github.io/Chess.jl/dev/api/#Chess.pieceon
 
+    board_string = string(b)
+    fen_string = split(board_string, "\n")[1]
+
     # files = [SS_FILE_A, SS_FILE_B, SS_FILE_C, SS_FILE_D, SS_FILE_E, SS_FILE_F, SS_FILE_H]
     ranks = [SS_RANK_8, SS_RANK_7, SS_RANK_6, SS_RANK_5, SS_RANK_4, SS_RANK_3, SS_RANK_2, SS_RANK_1]
     sq_color = BLACK
     black_color = (100, 100, 100)
     white_color = (190, 190, 190)
+    letter_row = "  a b c d e f g h"
     p_color = :red
-    for rank in ranks
-        for square in rank
+
+    println(letter_row)
+    for (r_idx, rank) in enumerate(ranks)
+        print("$(9 - r_idx) ")
+        for (f_idx, square) in enumerate(rank)
 
             piece = pieceon(b, square)
 
@@ -53,54 +60,21 @@ function crayon_print(b::Board)
 
 
         end
-        print(Crayon(reset = true), "\n")
+        print(Crayon(reset = true), "")
+        print(" $r_idx")
+        println()
         sq_color = coloropp(sq_color)
     end
 
-    print(Crayon(reset = true), "\n")
+    print(Crayon(reset = true), "")
+    println(letter_row)
+
+    println(fen_string)
 
 end
 
 function print_board(b::Board)
-    board_string = string(b)
-
-    fen_string = split(board_string, "\n")[1]
-
-    board_string = replace(board_string, "r" => "♜")
-    board_string = replace(board_string, "n" => "♞")
-    board_string = replace(board_string, "b" => "♝")
-    board_string = replace(board_string, "q" => "♛")
-    board_string = replace(board_string, "k" => "♚")
-    board_string = replace(board_string, "p" => "♟")
-
-    board_string = replace(board_string, "R" => "♖")
-    board_string = replace(board_string, "N" => "♘")
-    board_string = replace(board_string, "B" => "♗")
-    board_string = replace(board_string, "Q" => "♕")
-    board_string = replace(board_string, "K" => "♔")
-    board_string = replace(board_string, "P" => "♙")
-
-    board_string = replace(board_string, "-" => "□")
-
-    board_list = split(board_string, "\n")
-    letter_row = "   a  b  c  d  e  f  g  h"
-    new_board_list = []
-
-    push!(new_board_list, letter_row)
-
-    i = 8
-    for row in board_list[2:length(board_list)]
-        new_row = string(i, " ", row, " ", i)
-        push!(new_board_list, new_row)
-        i -= 1
-    end
-
-    push!(new_board_list, letter_row)
-    board_string = join(new_board_list, "\n")
-    
-    println(board_string)
-    println(fen_string)
-    crayon_print(b)
+   crayon_print(b)
 end
 
 function choice(iterable)
