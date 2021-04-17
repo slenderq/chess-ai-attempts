@@ -68,7 +68,9 @@ so this project was a way to explore the language.
 ```
 
 ## Future Improvements
-* Actually use [Zobrist Hashing](https://www.chessprogramming.org/Zobrist_Hashing) in the hash table 
+* Actually use [Zobrist Hashing](https://www.chessprogramming.org/Zobrist_Hashing) in the transposition table 
+
+* Make the transposition table cull entries rather than just grow until there is no more memory
 
 * Improve opening performance by making the algorithm attack the center
 
