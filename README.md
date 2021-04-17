@@ -7,6 +7,31 @@ Using [this](https://romstad.github.io/Chess.jl/dev/) chess board
 
 Currently the engine can look 8 moves deep and beats me often.
 
+## How to Run
+
+
+- Install packages
+    ```
+    # requires julia >= 1.6
+    julia install.jl
+    ```
+- Build Opening Book
+    ```
+    julia create_database.jl
+    ```
+- Play the AI
+    ```
+    julia main.jl --play
+    ```
+- Run tests 
+    ```
+    julia tests.jl
+    ```
+- Run tournament
+    ```
+    julia main.jl --tournament
+    ```
+
 ## Why?
 Seemed like an interesting project as I was getting more interested in chess.
 
@@ -45,7 +70,7 @@ so this project was a way to explore the language.
 ## Future Improvements
 * Actually use [Zobrist Hashing](https://www.chessprogramming.org/Zobrist_Hashing) in the hash table 
 
-* Improve opening performance.
+* Improve opening performance by making the algorithm attack the center
 
 * Fix checkmating blunders in the tests
 
