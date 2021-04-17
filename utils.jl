@@ -205,7 +205,6 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
 
     table_rst = check_trans_entry(board, player, search_depth)
     if table_rst != ()
-        # if there is actually a result
         return table_rst
     end
 
@@ -219,8 +218,6 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
 
     mlist = Array(moves(board))
 
-    # mlist = sort(mlist, by=(x -> see(board,x)), rev=true)
-
     # Use the best move first
     if !(last_best === missing)
         # Priotize the move that we last found
@@ -232,36 +229,25 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
         end
     end
 
-
     for move in mlist
-    # Threads.@threads for move in mlist
-
         # Create a board with the new move 
         p_board = domove(board, move)
         if search_depth == 0 || isterminal(p_board)
             eval = eval_board(player, p_board)
             # Delay Penalty
+            # bonus for quick checkmates
             if ischeckmate(p_board)
-                # bonus for quick checkmates
                 eval = eval / (ply +1)
-                # eval +
             end
-
         else
             old_move, eval = minimax(player, p_board, search_depth - 1, !maxplayer, alpha, beta, ply+1)
-            # if search_depth == 4
-                # print(" - $move $eval - ")
-            # end
-
         end
     
-
         if maxplayer
             if eval > best_eval
                 best_eval = eval
                 best_move = move
             end
-
 
             if eval > alpha
                 alpha = eval
@@ -276,7 +262,6 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
                 best_move = move
             end
 
-
             if eval < beta
                 beta = eval
             end
@@ -290,11 +275,9 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
     save_trans_entry(board, player, best_move, best_eval, maxplayer, search_depth)
     
     return best_move, best_eval
-
 end
 
 function is_endgame(board::Board) 
-
     white = 0
     black = 0
 
@@ -320,18 +303,14 @@ function is_endgame(board::Board)
     white += count(i -> (i == 'B'), board_string) 
     white += count(i -> (i == 'R'), board_string)
 
-
     if black <= 1 && white <= 1 
         return true
     end
-
     return false
-
 end
 
 function basic_pstable(b::Board, forcolor::PieceColor)
     # https://www.chessprogramming.org/PeSTO%27s_Evaluation_Function
-
     
     if forcolor == BLACK
         board = flip(b)
@@ -370,7 +349,6 @@ end
 
 function double_pawns(board::Board, forcolor::PieceColor)
     # https://romstad.github.io/Chess.jl/dev/api/#Chess.pieceon
-
     total_pawns = 0
     total_double = 0
     files = [SS_FILE_A, SS_FILE_B, SS_FILE_C, SS_FILE_D, SS_FILE_E, SS_FILE_F, SS_FILE_H]
@@ -388,7 +366,6 @@ function double_pawns(board::Board, forcolor::PieceColor)
             total_double += (double_pawns - 1)
         end
     end
-
     return total_double
 end
     
