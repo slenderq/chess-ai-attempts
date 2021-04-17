@@ -173,8 +173,8 @@ eg_king_table = [
     -27 -11   4  13  14   4  -5 -17;
     -53 -34 -21 -11 -28 -14 -24 -4
 ]
-# 1r6/8/4k3/8/8/8/K7/3q4 w - - should be checkmate
 game_blunders = [
+    ["1r6/8/4k3/8/8/K7/8/3q4 b - - 1 1" , "Qa1"],
     ["r1bqkb1r/ppppppp1/8/4n2p/2B1P1n1/3P1N1P/PPP1QPP1/RNB1K2R b KQkq - 0 6" , "Nf3"],
     ["rnb1k1nr/ppqppp1p/2p3pB/8/3PP3/2NB1N2/PPP2PPP/R2QK2R b KQkq -" , "Nxh6"],
     ["8/3P4/8/8/4Q3/4P3/R4K2/3k4 w - - 2 2", "Qb1 Qh1" ],
