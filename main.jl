@@ -46,6 +46,8 @@ function game_loop(white, black, printing::Bool, header_string)
         write_game(g)
         rethrow(ex)
     end
+
+    write_game(g)
     return b
 end
 
