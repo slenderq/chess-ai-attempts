@@ -50,9 +50,17 @@ function crayon_print(b::Board)
 
 
             if sq_color == BLACK
-                print(Crayon(foreground = p_color, background = black_color),"$sym ")
+                if pcolor(piece) == BLACK
+                    print(black_black, "$sym ")
+                else
+                    print(black_white, "$sym ")
+                end
             else
-                print(Crayon(foreground = p_color, background = white_color),"$sym ")
+                if pcolor(piece) == BLACK
+                    print(white_black, "$sym ")
+                else
+                    print(white_white, "$sym ")
+                end
             end
 
             sq_color = coloropp(sq_color)
