@@ -28,6 +28,7 @@ function game_loop(white, black, printing::Bool, header_string)
         while !isterminal(board(g))
             b = board(g)
             if printing
+                run(`clear`)
                 print_board(b)
                 if fen(b) != START_FEN
                     println("last move: $(lastmove(b))")
