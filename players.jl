@@ -46,7 +46,7 @@ mutable struct TimerMiniMaxPlayer
     max_size::Int
 
     function TimerMiniMaxPlayer(elo, startdepth::Integer, processtime::Union{Integer,Float64})
-        new(elo, startdepth, processtime, Dict(), -1, 1000)
+        new(elo, startdepth, processtime, Dict(), -1, 5000)
     end
 end
 Base.show(io::IO, player::TimerMiniMaxPlayer) = println("$(typeof(player)) elo: $(player.elo) processtime: $(player.processtime) max_depth_seen $(player.max_depth_seen)")
