@@ -8,9 +8,8 @@ struct trans_table_value
     maxplayer::Bool
     time::Int64
     depth::Int
-    max_size::Int
     function trans_table_value(best_move::Move, best_eval::Float64, maxplayer::Bool, depth::Int)
-        new(best_move, best_eval, maxplayer, time_ns(), depth, 10000000000)
+        new(best_move, best_eval, maxplayer, time_ns(), depth)
     end
 end
 
@@ -44,10 +43,10 @@ mutable struct TimerMiniMaxPlayer
     processtime::Union{Integer,Float64}
     trans_table::Dict
     max_depth_seen::Int
-
+    max_size::Int
 
     function TimerMiniMaxPlayer(elo, startdepth::Integer, processtime::Union{Integer,Float64})
-        new(elo, startdepth, processtime, Dict(), -1)
+        new(elo, startdepth, processtime, Dict(), -1, 1e5)
     end
 end
 Base.show(io::IO, player::TimerMiniMaxPlayer) = println("$(typeof(player)) elo: $(player.elo) processtime: $(player.processtime) max_depth_seen $(player.max_depth_seen)")
@@ -98,9 +97,9 @@ function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Boar
     eval += ischeckmate(board) ? 2^20 : 0
 
     if forcolor == BLACK
-        eval += isterminal(board) && !ischeckmate(board) ? -2^20 : 0
+        eval += isterminal(board) && !ischeckmate(board) ? -2^16 : 0
     else
-        eval += isterminal(board) && !ischeckmate(board) ? 2^20 : 0
+        eval += isterminal(board) && !ischeckmate(board) ? 2^16 : 0
     end
 
     eval += basic_pstable(board, WHITE) 

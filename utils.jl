@@ -184,7 +184,21 @@ function save_trans_entry(board::Board, player, best_move::Move, best_eval::Floa
             compressed_board = fen(board)
             player.trans_table[compressed_board] = trans_table_value(best_move, best_eval, maxplayer, search_depth)
         end
+        size = length(player.trans_table)
+
+        if size > player.max_size
+            oldest = -Inf
+            oldest_key = ""
+            for (key, item) in player.trans_table
+                if item.time > oldest
+                    oldest = item.time
+                    oldest_key = key
+                end
+            end
+            delete!(player.trans_table, oldest_key)
+        end
     end
+
 end
 
 function minimax(player, board::Board, search_depth::Integer)
@@ -249,7 +263,12 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
             # Delay Penalty
             # bonus for quick checkmates
             if ischeckmate(p_board)
-                eval = eval / (ply +1)
+                if maxplayer
+                    eval = eval / (ply +1)
+                else
+                    eval = eval * (ply +1)
+                end
+                return move, eval
             end
         else
             old_move, eval = minimax(player, p_board, search_depth - 1, !maxplayer, alpha, beta, ply+1)
