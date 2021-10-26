@@ -5,5 +5,5 @@
 #=
 exec julia -O3 "$0" -- $@
 =#
-include("main.jl")
-basic_game()
+include("talk.jl")
+talk()
