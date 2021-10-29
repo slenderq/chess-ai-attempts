@@ -16,16 +16,16 @@ function talk()
 
     (errorRead, errorWrite) = redirect_stderr()
     while true
-        msg = readline();
+        msg = readline()
 
         print(">>> ")
         print(msg)
         print("\n")
-        b = command(b, msg, player);
-
+        b = command(b, msg, player)
 
     end
     close(outWrite)
+    println("test")
 
     talk()
 end
@@ -50,11 +50,11 @@ function command(board, msg, player)
         return board
     end
 
-    if "position startpos moves" in msg
-
+    if startswith(msg, "position startpos moves")
+        return board
     end
 
-    if "position fen" in msg
+    if startswith(msg,"position fen") 
         parts = split(msg, " ")
         fen = join(parts[2:length(parts)], " ")
         board = fromfen(fen)
@@ -70,5 +70,7 @@ function command(board, msg, player)
 
     end
 
+    return board
 end
 
+talk()
