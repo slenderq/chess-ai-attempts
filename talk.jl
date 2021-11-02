@@ -51,6 +51,7 @@ function command(board, msg, player)
     end
 
     if startswith(msg, "position startpos moves")
+        move_string = replace(msg, "position startpos moves")
         return board
     end
 
