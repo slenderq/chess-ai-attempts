@@ -2,6 +2,8 @@ using Chess
 using Chess.Book
 using Memoize
 
+include("utils.jl")
+
 struct trans_table_value
     best_move::Move
     best_eval::Float64
