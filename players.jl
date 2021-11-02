@@ -135,7 +135,8 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
 
     
     # Openings
-    move = pickbookmove(board, "my-book.obk")
+    # HACK: Using the default book until I can figure this out....
+    move = pickbookmove(board)
     
     if move === nothing
 
