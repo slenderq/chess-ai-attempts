@@ -13,7 +13,7 @@ function talk()
     b = startboard()
     g = Game(b)
 
-    player = TimerMiniMaxPlayer(400, 1, 14)
+    player = TimerMiniMaxPlayer(400, 1, 30)
 
     # (errorRead, errorWrite) = redirect_stderr()
     open("log.txt", "w") do f

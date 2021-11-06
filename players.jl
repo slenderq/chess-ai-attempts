@@ -136,7 +136,8 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
     
     # Openings
     # HACK: Using the default book until I can figure this out....
-    move = pickbookmove(board)
+    move = pickbookmove(board, "personal.obk")
+    # move = pickbookmove(board)
     
     if move === nothing
 
@@ -171,6 +172,9 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
         end
         # println("$move $(fen(board))")
         end
+    else
+        # if this is the case we have used a book move...
+        found_move = true
     end
     # end
     if !found_move
