@@ -30,6 +30,8 @@ function talk()
             print("\n")
             b = command(b, msg, player)
 
+            # go movetime 
+
         end
     end
     # close(outWrite)
