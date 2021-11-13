@@ -121,19 +121,22 @@ function countpieces(board::Board, forcolor::PieceColor)
 
     # Only care about the pieces
     board_string = split(board_fen, " ")[1]
+    board_string = split(board_fen, " ")[1]
+    board_vec = collect(board_string)
+
     # color = chess.WHITE
-    white += count(i -> (i == 'P'), board_string) * 1
-    white += count(i -> (i == 'N'), board_string) * 3
-    white += count(i -> (i == 'B'), board_string) * 3
-    white += count(i -> (i == 'R'), board_string) * 5
-    white += count(i -> (i == 'Q'), board_string) * 9
+    white += count(i -> (i == 'P'), board_vec) * 1
+    white += count(i -> (i == 'N'), board_vec) * 3
+    white += count(i -> (i == 'B'), board_vec) * 3
+    white += count(i -> (i == 'R'), board_vec) * 5
+    white += count(i -> (i == 'Q'), board_vec) * 9
 
     # color = chess.BLACK
-    black += count(i -> (i == 'p'), board_string) * 1
-    black += count(i -> (i == 'n'), board_string) * 3
-    black += count(i -> (i == 'b'), board_string) * 3
-    black += count(i -> (i == 'r'), board_string) * 5
-    black += count(i -> (i == 'q'), board_string) * 9
+    black += count(i -> (i == 'p'), board_vec) * 1
+    black += count(i -> (i == 'n'), board_vec) * 3
+    black += count(i -> (i == 'b'), board_vec) * 3
+    black += count(i -> (i == 'r'), board_vec) * 5
+    black += count(i -> (i == 'q'), board_vec) * 9
 
     # always from whites perspective
     differential = white - black
