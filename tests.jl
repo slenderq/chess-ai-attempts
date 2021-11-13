@@ -111,5 +111,7 @@ function run()
     test_time()
 end
 
-run()
-println("Tests pass!")
+if abspath(PROGRAM_FILE) == @__FILE__
+    run()
+    println("Tests pass!")
+end;

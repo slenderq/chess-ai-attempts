@@ -101,4 +101,6 @@ function command(board, msg, player)
     return board
 end
 
-talk()
+if abspath(PROGRAM_FILE) == @__FILE__
+    talk()
+end

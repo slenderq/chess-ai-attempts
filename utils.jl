@@ -225,7 +225,7 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
     # In case this needs to be interupped
     # make sure that there is a change for another function to run.
     if rand(1:100) == 1 
-        sleep(0.0000000000000000000000000000000001)
+        sleep(0.000000001)
     end
 
     table_rst = check_trans_entry(board, player, search_depth)
@@ -255,8 +255,9 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
     end
 
     for move in mlist
+        p_board = board
         # Create a board with the new move 
-        p_board = domove(board, move)
+        p_board = domove(p_board, move)
         if search_depth == 0 || isterminal(p_board)
             eval = eval_board(player, p_board)
             # Delay Penalty
