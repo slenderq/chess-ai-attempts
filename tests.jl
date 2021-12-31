@@ -50,7 +50,7 @@ function rapid_engie_test(player, tests ,debug::Bool)
 
     passed_tests::Integer = 0
     failed = []
-    depth = 4
+    depth = 8
     eval_failures = true
 
     # Don't eval when you have a crapton of tests to do
