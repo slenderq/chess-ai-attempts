@@ -108,17 +108,17 @@ end
 
 function makemove(player::TimerMiniMaxPlayer, board::Board)
     
-    starttime = time()
-    depth = player.startdepth
+    starttime::Float64 = time()
+    depth::Int = player.startdepth
     
     # move::Move = Move(Square(FILE_D, RANK_5), Square(FILE_D, RANK_5))
     eval::Float64 = 0
-    found_move = false
+    found_move::Bool = false
 
     
     # Openings
     # HACK: Using the default book until I can figure this out....
-    move = pickbookmove(board, bookfile="personal.obk")
+    move::Union{Move,Nothing} = pickbookmove(board, bookfile="personal.obk")
     # move = pickbookmove(board)
     
     if move === nothing

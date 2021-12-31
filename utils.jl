@@ -220,7 +220,7 @@ function save_trans_entry(board::Board, player, best_move::Move, best_eval::Floa
 
 end
 
-function minimax(player, board::Board, search_depth::Integer)
+function minimax(player, board::Board, search_depth::Int)
     if sidetomove(board) == WHITE
         return minimax(player, board, search_depth, true, -Inf, Inf, missing, 0)
     else
@@ -228,7 +228,7 @@ function minimax(player, board::Board, search_depth::Integer)
     end
 end
 
-function minimax(player, board::Board, search_depth::Integer, last_best::Union{Missing, Move})
+function minimax(player, board::Board, search_depth::Int, last_best::Union{Missing, Move})
     if sidetomove(board) == WHITE
         return minimax(player, board, search_depth, true, -Inf, Inf, last_best, 0)
     else
@@ -236,11 +236,11 @@ function minimax(player, board::Board, search_depth::Integer, last_best::Union{M
     end
 end
 
-function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, alpha::Float64, beta::Float64, ply::Int)
-    return minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, alpha::Float64, beta::Float64, missing, ply)
+function minimax(player, board::Board, search_depth::Int, maxplayer::Bool, alpha::Float64, beta::Float64, ply::Int)
+    return minimax(player, board::Board, search_depth::Int, maxplayer::Bool, alpha::Float64, beta::Float64, missing, ply)
 end
 
-function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, alpha::Float64, beta::Float64, last_best::Union{Missing, Move}, ply::Int)
+function minimax(player, board::Board, search_depth::Int, maxplayer::Bool, alpha::Float64, beta::Float64, last_best::Union{Missing, Move}, ply::Int)
 
     # In case this needs to be interupped
     # make sure that there is a change for another function to run.
@@ -263,7 +263,7 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
 
     mlist::Array = Array(moves(board))
 
-    mlist = sort(mlist, by= x -> rate_move(board,x))
+    mlist = sort(mlist, by=x -> rate_move(board,x))
 
     # Use the best move first
     if !(last_best === missing)
