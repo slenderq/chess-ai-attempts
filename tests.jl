@@ -10,10 +10,10 @@ using PrettyPrint
 
 # testing that piece counting works 
 function test_piece_count()
-    @test countpieces(fromfen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"), BLACK) == 0
-    @test countpieces(fromfen("rnbqkbnr/pppppppp/8/8/8/8/PPPP1PPP/RNBQKBNR"), BLACK) == -1
-    @test countpieces(fromfen("rnb1kbnr/pppppppp/8/8/8/8/PPPP1PPP/RNBQKBNR"), BLACK) == 8
-    @test countpieces(fromfen("rnb1k1nr/pp1ppp1p/2p3p1/8/3PPB2/2NB1N2/PPP2PPP/R2QK2R b KQkq -"), BLACK) == 12 
+    @test countpieces(fromfen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")) == 0
+    @test countpieces(fromfen("rnbqkbnr/pppppppp/8/8/8/8/PPPP1PPP/RNBQKBNR")) == -1
+    @test countpieces(fromfen("rnb1kbnr/pppppppp/8/8/8/8/PPPP1PPP/RNBQKBNR")) == 8
+    @test countpieces(fromfen("rnb1k1nr/pp1ppp1p/2p3p1/8/3PPB2/2NB1N2/PPP2PPP/R2QK2R b KQkq -")) == 12 
 end
 
 function test_development()
@@ -50,9 +50,12 @@ function rapid_engie_test(player, tests ,debug::Bool)
 
     passed_tests::Integer = 0
     failed = []
+    depth = 4
+    eval_failures = true
 
     for (index, test) in enumerate(tests)
-        board = fromfen(test[1])
+        fen = test[1]
+        board = fromfen(fen)
         answers = test[2]
         raw_answers = split(test[2], " ")
         answers = [movefromsan(board, String(x)) for x in raw_answers]
@@ -63,11 +66,34 @@ function rapid_engie_test(player, tests ,debug::Bool)
             passed_tests += 1
             print("✔")
         else
-            push!(failed, [fen(board), answers, move])
-            
-            print("❌")
+
             if debug
-                println("$index $move $answers ")
+                if eval_failures
+                    # get the eval for the bad move
+                    f_board = domove(board, move)
+                    f_move, fail_eval = minimax(player, f_board, depth)
+
+                    # get the eval for the correct move
+                    s_board = domove(board, answers[1])
+                    f_move, success_eval = minimax(player, s_board, depth)
+
+                    str_mistake =  movetosan(board, move)
+                    str_answer = movetosan(board, answers[1])
+                else 
+                    fail_eval = 0 
+                    success_eval = 0
+                end
+
+                if sidetomove(board) == WHITE
+                    color_str = "W"
+                else
+                    color_str = "B"
+                end
+            
+                println()
+                println("❌:$str_mistake $fail_eval  ✔:$str_answer $success_eval $color_str $fen")
+            else
+                print("❌")
             end
         end
     end

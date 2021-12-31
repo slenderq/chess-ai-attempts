@@ -67,7 +67,7 @@ end
     forcolor = WHITE # flipcolor(sidetomove(board))
     eval::Float64 = 0
 
-    eval += countpieces(board, forcolor) * 100
+    eval += countpieces(board) * 100
     eval += ischeckmate(board) ? 1000 : 0
     eval += isterminal(board) ? -100 : 0
     # eval += development_rating(board, forcolor) * 100
@@ -87,7 +87,7 @@ function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Boar
     forcolor = flipcolor(sidetomove(board))
     eval::Float64 = 0
 
-    eval += countpieces(board, forcolor) * 10000
+    eval += countpieces(board) * 10000
     if ischeckmate(board)
         if forcolor == BLACK
             # white is checkmated
@@ -136,7 +136,7 @@ function makemove(player::TimerMiniMaxPlayer, board::Board)
     
     # Openings
     # HACK: Using the default book until I can figure this out....
-    move = pickbookmove(board, "personal.obk")
+    move = pickbookmove(board, bookfile="personal.obk")
     # move = pickbookmove(board)
     
     if move === nothing

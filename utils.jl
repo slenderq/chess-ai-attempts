@@ -110,7 +110,7 @@ function development_rating(board::Board, forcolor::PieceColor)
     return rating
 end
 
-function countpieces(board::Board, forcolor::PieceColor)
+function countpieces(board::Board)
 
     # https://en.wikipedia.org/wiki/Chess_piece_relative_value
     # TODO: This could actually be more complex
@@ -259,9 +259,20 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
 
     for move in mlist
         p_board = board
+
+        # counting the pices before this move
+        pieces_val_before = countpieces(p_board)
+
         # Create a board with the new move 
         p_board = domove(p_board, move)
-        if search_depth == 0 || isterminal(p_board)
+
+        pieces_val_after = countpieces(p_board)
+
+        # A capture is when the piece values change
+        # We should keep going deeper if there is a capture of a tactic
+        is_capture = pieces_val_after != pieces_val_before
+
+        if search_depth == 0 || isterminal(p_board) || !is_capture
             eval = eval_board(player, p_board)
             # Delay Penalty
             # bonus for quick checkmates
@@ -310,6 +321,7 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
     
     return best_move, best_eval
 end
+
 
 function is_endgame(board::Board) 
     white = 0
