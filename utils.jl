@@ -249,6 +249,8 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
 
     mlist = Array(moves(board))
 
+    mlist = sort(mlist, by= x -> rate_move(board,x))
+
     # Use the best move first
     if !(last_best === missing)
         # Priotize the move that we last found
@@ -325,6 +327,22 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
     return best_move, best_eval
 end
 
+function rate_move(board, move)
+    # How good for white is this move?
+    eval = 0.0
+
+    # counting the pices before this move
+    pieces_val_before = countpieces(board)
+
+    # Create a board with the new move 
+    board = domove(board, move)
+
+    pieces_val_after = countpieces(board)
+
+    eval = eval + (pieces_val_after - pieces_val_before)
+
+    return eval
+end
 
 function is_endgame(board::Board) 
     white = 0

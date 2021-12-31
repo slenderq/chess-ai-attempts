@@ -59,7 +59,6 @@ end
 function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Board)
     # NOTE: from WHITE's perspective
 
-
     # https://romstad.github.io/Chess.jl/stable/api/#Chess.movecount
 
     forcolor = flipcolor(sidetomove(board))
@@ -86,6 +85,7 @@ function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Boar
     eval -= basic_pstable(board, BLACK) 
     
     eval -= ischeck(board) ? 1000 : 0
+
     # making sure this is always from whites perspective
     # if forcolor == BLACK
     #     eval += (movecount(board) * 10)
