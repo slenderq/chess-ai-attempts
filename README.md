@@ -96,7 +96,7 @@ https://github.com/ShailChoksi/lichess-bot
 
 * Fix checkmating blunders in the tests
 
-* actually structure the search like a human (checks, captures, attacks, development)BBB
+* actually structure the search like a human (checks, captures, attacks, development)
 
 ## Resources
 List of links that I used to  make this.
