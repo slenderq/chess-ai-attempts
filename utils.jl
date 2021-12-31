@@ -272,7 +272,7 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
         # We should keep going deeper if there is a capture of a tactic
         is_capture = pieces_val_after != pieces_val_before
 
-        if search_depth == 0 || isterminal(p_board) || !is_capture
+        if search_depth == 0 || isterminal(p_board) || !is_capture || !ischeck(p_board)
             eval = eval_board(player, p_board)
             # Delay Penalty
             # bonus for quick checkmates

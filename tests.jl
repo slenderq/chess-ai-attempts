@@ -53,6 +53,11 @@ function rapid_engie_test(player, tests ,debug::Bool)
     depth = 4
     eval_failures = true
 
+    # Don't eval when you have a crapton of tests to do
+    if length(tests) > 100
+        println("Setting eval to false because we have $(lenght(tests)) tests!")
+        eval_failures = false
+    end
     for (index, test) in enumerate(tests)
         fen = test[1]
         board = fromfen(fen)
@@ -91,7 +96,7 @@ function rapid_engie_test(player, tests ,debug::Bool)
                 end
             
                 println()
-                println("❌:$str_mistake $fail_eval  ✔:$str_answer $success_eval $color_str $fen")
+                println("$index. ❌:$str_mistake $fail_eval  ✔:$str_answer $success_eval $color_str fen( $fen )")
             else
                 print("❌")
             end
