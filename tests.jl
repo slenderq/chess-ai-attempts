@@ -125,7 +125,11 @@ function test_development_rank()
     @test development_rating(fromfen("r1bqkb1r/pppp1ppp/2n2n2/4p3/4P3/2NP4/PPP2PPP/R1BQKBNR w KQkq - 1 4")) == -1
     @test development_rating(fromfen("r1bqkbnr/pp2pppp/2n5/2p5/3pP3/1P1P4/P1P2PPP/RNBQKBNR b KQkq - 1 2")) == -1
 
+end
 
+function speed_test(player)
+    board = fromfen("r1b1kb1r/1p1n1p2/p3pP1p/q7/3N3p/2N5/P1PQB1PP/1R3R1K b kq -")
+    @time move, eval = minimax(player, board, 10)
 end
 
 function run()
@@ -135,6 +139,8 @@ function run()
     # rapid engine test. Takes ~50 min
     # @time rapid_engie_test(TimerMiniMaxPlayer(400, 1, 14), rapid_engine_table, false) # 11/111
     player = TimerMiniMaxPlayer(400, 1, 7)
+
+    speed_test(player)
     # player = TimerMiniMaxPlayer(400, 1, 0.1)
 
     rapid_engie_test(player, selected, true) # 3/8

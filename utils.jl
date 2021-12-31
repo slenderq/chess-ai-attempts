@@ -117,13 +117,13 @@ function countpieces(board::Board)
 
     # https://en.wikipedia.org/wiki/Chess_piece_relative_value
     # TODO: This could actually be more complex
-    board_fen = fen(board)
+    board_fen::String = fen(board)
 
-    white::Float64 = 0
-    black::Float64 = 0
+    white::Int32 = 0
+    black::Int32 = 0
 
     # Only care about the pieces
-    board_string = split(board_fen, " ")[1]
+    board_string::String = split(board_fen, " ")[1]
     board_string = split(board_fen, " ")[1]
     board_vec = collect(board_string)
 
@@ -142,8 +142,22 @@ function countpieces(board::Board)
     black += count(i -> (i == 'q'), board_vec) * 9
 
     # always from whites perspective
-    differential = white - black
+    differential::Int32 = white - black
     return differential
+end
+
+function value_piece(piece::Piece)
+
+    piece_type::PieceType = ptype(piece)
+    eval::Int64 = 0
+
+    eval += piece_type == PAWN ? 1 : 0
+    eval += piece_type == KNIGHT ? 3 : 0
+    eval += piece_type == BISHOP ? 3 : 0
+    eval += piece_type == ROOK ? 5 : 0
+    eval += piece_type == QUEEN ? 9 : 0
+
+    return eval
 end
 
 function check_trans_entry(board::Board, player, search_depth::Int)
@@ -247,31 +261,32 @@ function minimax(player, board::Board, search_depth::Integer, maxplayer::Bool, a
         best_eval = best_eval * -1
     end
 
-    mlist = Array(moves(board))
+    mlist::Array = Array(moves(board))
 
     mlist = sort(mlist, by= x -> rate_move(board,x))
 
     # Use the best move first
     if !(last_best === missing)
         # Priotize the move that we last found
-        idx = findfirst(m -> m == last_best, mlist)
+        idx::Int64 = findfirst(m -> m == last_best, mlist)
         if idx != nothing
-            temp = mlist[1]
+            temp::Move = mlist[1]
             mlist[1] = mlist[idx]
             mlist[idx] = temp
         end
     end
 
     for move in mlist
-        p_board = board
+        p_board::Board = board
 
         # counting the pices before this move
-        pieces_val_before = countpieces(p_board)
+        pieces_val_before::Int8 = countpieces(p_board)
+
 
         # Create a board with the new move 
         p_board = domove(p_board, move)
 
-        pieces_val_after = countpieces(p_board)
+        pieces_val_after::Int8 = countpieces(p_board)
 
         # A capture is when the piece values change
         # We should keep going deeper if there is a capture of a tactic
@@ -331,18 +346,34 @@ function rate_move(board, move)
     # How good for white is this move?
     eval = 0.0
 
+    # This rates captures to be explored
+    move_color = sidetomove(board) 
+
     # counting the pices before this move
     pieces_val_before = countpieces(board)
-
     # Create a board with the new move 
     board = domove(board, move)
-
     pieces_val_after = countpieces(board)
 
     eval = eval + (pieces_val_after - pieces_val_before)
 
+    is_capture = pieces_val_after != pieces_val_before
+    if is_capture
+        dest_sq = to(move)
+
+        atk = pawnattacks(flipcolor(move_color), dest_sq)
+        if !isempty(atk)
+            eval = eval - 5
+        end
+
+    end
+
+
+
     return eval
 end
+
+
 
 function is_endgame(board::Board) 
     white = 0
