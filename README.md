@@ -80,6 +80,8 @@ so this project was a way to explore the language.
 
 * Fix checkmating blunders in the tests
 
+* actually structure the search like a human (checks, captures, attacks, development)BBB
+
 ## Resources
 List of links that I used to  make this.
 - https://www.chessprogramming.org/Main_Page
