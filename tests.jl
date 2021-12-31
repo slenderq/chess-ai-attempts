@@ -16,11 +16,6 @@ function test_piece_count()
     @test countpieces(fromfen("rnb1k1nr/pp1ppp1p/2p3p1/8/3PPB2/2NB1N2/PPP2PPP/R2QK2R b KQkq -")) == 12 
 end
 
-function test_development()
-    @test development_rating(fromfen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq"), WHITE) == 0
-    @test development_rating(fromfen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1"), WHITE) == 1
-    @test development_rating(fromfen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPPKPPP/RNBQ1BNR w kq - 0 1"), WHITE) == 1
-end
 
 function test_time()
     # TODO: Fix this test!
@@ -124,7 +119,17 @@ function test_double_pawns()
     @test double_pawns(fromfen("r1bqkb1r/ppppppp1/8/3P3p/2BP2n1/P2P1P1P/P3QP2/RNB1K2R b KQkq - 0 1"), WHITE) == 4
 end
 
+function test_development_rank()
+    @test development_rating(fromfen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")) == 0
+    @test development_rating(fromfen("rnbqkbnr/pppppppp/8/8/8/2N5/PPPPPPPP/R1BQKBNR b KQkq - 1 1")) == 1
+    @test development_rating(fromfen("r1bqkb1r/pppp1ppp/2n2n2/4p3/4P3/2NP4/PPP2PPP/R1BQKBNR w KQkq - 1 4")) == -1
+    @test development_rating(fromfen("r1bqkbnr/pp2pppp/2n5/2p5/3pP3/1P1P4/P1P2PPP/RNBQKBNR b KQkq - 1 2")) == -1
+
+
+end
+
 function run()
+    test_development_rank()
     test_double_pawns()
 
     # rapid engine test. Takes ~50 min
@@ -132,14 +137,14 @@ function run()
     player = TimerMiniMaxPlayer(400, 1, 7)
     # player = TimerMiniMaxPlayer(400, 1, 0.1)
 
+    rapid_engie_test(player, selected, true) # 3/8
     @time rapid_engie_test(player, game_blunders, true) # 3/8
     # Write the transpotion table
     write_transition_table(player)
 
     test_basic_pstable()
-    test_development()
     test_piece_count()
-    test_time()
+    # test_time()
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__

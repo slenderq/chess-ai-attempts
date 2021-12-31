@@ -92,19 +92,22 @@ function flipcolor(p::PieceColor)
     end
 end
 
-function development_rating(board::Board, forcolor::PieceColor)
+function development_rating(board::Board)
+    # Can be thought of like "how ahead of development is white?" 
 
     rating = 0
-    for square in pieces(board, forcolor)
-        if forcolor == WHITE
-            if (rank(square) != RANK_1 && rank(square) != RANK_2) && pieceon(board, square) != KING
-                rating = rating + 1
-            end
-        else
-            if (rank(square) != RANK_7 && rank(square) != RANK_8) && pieceon(board, square) != KING
-                rating = rating + 1
-            end
+    for square in pieces(board, WHITE)
+        if (rank(square) == RANK_1) && (pieceon(board, square) != KING)
+            rating = rating - 1
         end
+
+    end
+
+    for square in pieces(board, BLACK)
+        if (rank(square) == RANK_8) && pieceon(board, square) != KING
+            rating = rating + 1
+        end
+
     end
 
     return rating

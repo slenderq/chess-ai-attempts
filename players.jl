@@ -30,14 +30,6 @@ mutable struct MiniMaxPlayer
         new(elo, depth)
     end
 end
-mutable struct BetterMiniMaxPlayer
-    elo::Float32 
-    depth::Integer
-
-    function BetterMiniMaxPlayer(elo, depth::Integer)
-        new(elo, depth)
-    end
-end
 
 mutable struct TimerMiniMaxPlayer
     elo::Float32 
@@ -62,19 +54,6 @@ mutable struct HumanPlayer
 
 end
 
-@memoize function eval_board(player::BetterMiniMaxPlayer, board::Board)
-
-    forcolor = WHITE # flipcolor(sidetomove(board))
-    eval::Float64 = 0
-
-    eval += countpieces(board) * 100
-    eval += ischeckmate(board) ? 1000 : 0
-    eval += isterminal(board) ? -100 : 0
-    # eval += development_rating(board, forcolor) * 100
-    # eval += rand(-1:1)
-    
-    return eval
-end
 
 # @memoize function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Board)
 function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Board)
@@ -109,15 +88,18 @@ function eval_board(player::Union{MiniMaxPlayer,TimerMiniMaxPlayer}, board::Boar
     
     # making sure this is always from whites perspective
     if forcolor == BLACK
-        eval += movecount(board) * 100
+        eval += (movecount(board) * 100)
     else
-        eval -= movecount(board) * 100
+        eval -= (movecount(board) * 100)
     end
 
     # punish for white double pawns
-    eval -= double_pawns(board, WHITE) * 5000
+    eval -= (double_pawns(board, WHITE) * 5000)
     # benefit for doubling the other players pawns
-    eval += double_pawns(board, BLACK) * 5000
+    eval += (double_pawns(board, BLACK) * 5000)
+
+    # Development Rating
+    eval += (development_rating(board) * 100)
     
     return eval
 end
