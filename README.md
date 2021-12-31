@@ -1,4 +1,4 @@
-# Chess AI attempts
+# QuaintanceBot (My own chess ai attempt)
 ## What is this?
 This is a Alpha-Beta chess engine that I built in julia.
 
