@@ -46,13 +46,10 @@ so this project was a way to explore the language.
 ```
 ├── README.md
 ├── create_database.jl # Create Opening Database
+├── download_lichess.sh # Download the latest games from the lichess deployment
+├── engine.sh # General commandline interface for UCI
 ├── games # Record of past games played
-│   ├── game-1.61809640822917e9.txt
-│   ├── game-1.618204917349792e9.pgn
-│   ├── game-1.61826017230973e9.pgn
-│   ├── game-1.618353692533573e9.pgn
 │   ├── game-1.618450741813242e9.pgn
-│   └── game-queen-blunder.pgn
 ├── install.jl # package installs
 ├── main.jl # game loop and cli interface
 ├── old_python # old python port of the project
@@ -67,6 +64,7 @@ so this project was a way to explore the language.
 │   └── spassky_1805.pgn
 ├── players.jl # AI and Human Players
 ├── tables.jl # Useful Tables
+├── talk.jl # UCI engine interface
 ├── tests.jl # Unit tests
 └── utils.jl # Algorithms
 ```
