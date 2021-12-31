@@ -7,6 +7,10 @@ Using [this](https://romstad.github.io/Chess.jl/dev/) chess board
 
 Currently the engine can look 8 moves deep and beats me often.
 
+## Play on Lichess
+
+https://lichess.org/@/QuaintanceBot
+
 ## How to Run
 
 
