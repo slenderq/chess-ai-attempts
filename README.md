@@ -70,6 +70,22 @@ so this project was a way to explore the language.
 ├── tests.jl # Unit tests
 └── utils.jl # Algorithms
 ```
+## UCI Support
+
+This engine has some halfbaked [UCI](https://www.chessprogramming.org/UCI) support. 
+
+This is implemented in `talk.jl` and accessed with `engine.sh`
+
+Note that due to the fact that juila cannot be compiled you must have julia installed to run this engine interface.
+
+Example Config:
+```
+  dir: "./engines/" # Directory containing engines, relative to this project.
+  name: "engine.sh" # Binary name of the engine to use.
+```
+
+Lichess bot used:
+https://github.com/ShailChoksi/lichess-bot
 
 ## Future Improvements
 * Actually use [Zobrist Hashing](https://www.chessprogramming.org/Zobrist_Hashing) in the transposition table 
