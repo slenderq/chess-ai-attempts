@@ -129,6 +129,8 @@ end
 
 function speed_test(player)
     board = fromfen("r1b1kb1r/1p1n1p2/p3pP1p/q7/3N3p/2N5/P1PQB1PP/1R3R1K b kq -")
+    println("Ignore the first one...")
+    @time move, eval = minimax(player, board, 10)
     @time move, eval = minimax(player, board, 10)
 end
 

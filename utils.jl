@@ -248,7 +248,7 @@ function minimax(player, board::Board, search_depth::Int, maxplayer::Bool, alpha
         sleep(0.000000001)
     end
 
-    table_rst = check_trans_entry(board, player, search_depth)
+    table_rst::Tuple = check_trans_entry(board, player, search_depth)
     if table_rst != ()
         return table_rst
     end
@@ -342,7 +342,7 @@ function minimax(player, board::Board, search_depth::Int, maxplayer::Bool, alpha
     return best_move, best_eval
 end
 
-function rate_move(board, move)
+function rate_move(board::Board, move::Move)
     # How good for white is this move?
     eval = 0.0
 
@@ -368,12 +368,8 @@ function rate_move(board, move)
 
     end
 
-
-
     return eval
 end
-
-
 
 function is_endgame(board::Board) 
     white = 0
