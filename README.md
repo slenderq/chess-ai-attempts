@@ -1,3 +1,3 @@
 # QuaintanceBot (My own chess ai attempt)
 
-[Moved to](https://gitlab.com/slenderq/quaintancebot/)
+[Moved to GitLab](https://gitlab.com/slenderq/quaintancebot/)
